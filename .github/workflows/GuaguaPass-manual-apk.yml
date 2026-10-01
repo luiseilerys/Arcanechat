@@ -1,0 +1,80 @@
+# Workflow para generar la APK de GuaguaPass de forma MANUAL.
+name: Build GuaguaPass APK (Manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_server:
+        description: "Incluir también el empaquetado del servidor Node.js"
+        type: boolean
+        required: true
+        default: false
+      artifact_name:
+        description: "Nombre del artefacto APK a descargar"
+        type: string
+        required: false
+        default: "GuaguaPass.apk"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-apk:
+    name: Compilar GuaguaPass.apk
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v5
+
+      - name: Configurar JDK 17
+        uses: actions/setup-java@v5
+        with:
+          java-version: 17
+          distribution: 'temurin'
+
+      - name: Instalar Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Asegurar componentes exactos
+        run: |
+          sdkmanager --install "build-tools;34.0.0" "platforms;android-34" >/dev/null
+          echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
+
+      - name: Compilar la APK (guaguapass/build.sh)
+        working-directory: guaguapass
+        run: |
+          chmod +x build.sh
+          ./build.sh
+          ls -lh out/GuaguaPass.apk
+
+      - name: Verificar firma de la APK
+        working-directory: guaguapass
+        run: |
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --print-certs out/GuaguaPass.apk
+
+      - name: (Opcional) Empaquetar el servidor Node.js
+        if: inputs.build_server == true
+        run: |
+          node --check guaguapass/server/server.js
+          mkdir -p server-dist
+          tar -czf "server-dist/guaguaserver.tar.gz" -C guaguapass server README.md
+          ls -lh server-dist/guaguaserver.tar.gz
+
+      - name: Subir APK como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name }}
+          path: guaguapass/out/GuaguaPass.apk
+          if-no-files-found: error
+
+      - name: (Opcional) Subir servidor como artefacto
+        if: inputs.build_server == true
+        uses: actions/upload-artifact@v4
+        with:
+          name: guaguaserver.tar.gz
+          path: server-dist/guaguaserver.tar.gz
+          if-no-files-found: ignore
