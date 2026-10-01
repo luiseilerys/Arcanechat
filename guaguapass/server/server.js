@@ -1,15 +1,28 @@
 #!/usr/bin/env node
 /**
- * GuaguaPass — Servidor de sincronizacion en tiempo real.
+ * GuaguaPass — Servidor de sincronización estilo chatmail/arcanechat.
  * Sin dependencias externas: http + crypto nativos de Node.js.
  *
- *   node server.js [puerto]
+ *   GUAGUA_DOMAIN=guagua.example  GUAGUA_PROVISION=1  node server.js [puerto]
  *
- * Cada gestor se registra con POST /api/user (una vez, desde esta consola o curl),
- * inicia sesion con POST /api/login y las ventas viajan por POST /api/sale.
- * La rejilla se sincroniza con GET /api/state cada 1 segundo (la APK hace polling).
- * El asiento (fecha+hora+guagua+numero) es unico a nivel de BD: si dos gestores
- * lo reservan a la vez, uno recibe HTTP 409 y ve el cambio en <=1 s.
+ * METODO ARCANESCHAT (registro automatico tipo /secret-api/new-user):
+ *   - La APK deriva usuario+contraseña ALEATORIOS de un seed local
+ *     (como chatmail deriva <aleatorio>@dominio) y se los inventa una sola vez.
+ *   - Al arrancar, llama POST /api/auto-register con {login,password,name}.
+ *     Si la cuenta no existe, el servidor la CREA al vuelo (sin captcha ni
+ *     administracion) y responde token JWT -> "autenticacion automatica".
+ *   - Si ya existe, hace login normal con las mismas credenciales derivadas.
+ *   - El endpoint esta protegido por cabecera X-Provision-Key (equivalente al
+ *     endpoint secreto de chatmail). Con GUAGUA_PROVISION=0 se desactiva el
+ *     registro publico y solo funcionan gestores creados via /api/user.
+ *
+ * SINCRONIZACION EN TIEMPO REAL (igual frecuencia que el polling de 1 s):
+ *   - GET /api/events?date=&guagua=&hora=  -> Server-Sent Events: el servidor
+ *     EMPUJA el estado del asiento en <=1 s tras cada venta/cancelacion.
+ *   - GET /api/state ...                    -> snapshot JSON (fallback HTTP
+ *     del polling clasico; tambien se envia como evento inicial por SSE).
+ *   - Conflicto de asiento: el segundo en reservar recibe event "conflict"
+ *     (equivalente al 409) y ve el cambio ajeno al instante.
  */
 const http = require('http');
 const crypto = require('crypto');
@@ -18,6 +31,8 @@ const path = require('path');
 
 const PORT = parseInt(process.argv[2] || '3000', 10);
 const DB_FILE = path.join(__dirname, 'db.json');
+const PROVISION_KEY = process.env.GUAGUA_PROVISION_KEY || 'guagua-provision-key';
+const PROVISION_OPEN = process.env.GUAGUA_PROVISION !== '0'; // por defecto abierto (estilo chatmail)
 
 // ---------------- Config del negocio (editala aqui) ----------------
 const CONFIG = {
@@ -77,20 +92,105 @@ function authed(req) {
   return verify(h.replace(/^Bearer\s+/i, ''));
 }
 
+// ================================================================
+//  CAPA DE TIEMPO REAL (SSE): canales por (fecha|guagua|hora)
+// ================================================================
+const channels = new Map(); // key -> Set<res>
+function chanKey(date, guagua, hora) { return `${date}|${guagua}|${hora}`; }
+
+function sseSend(res, event, dataObj) {
+  try {
+    res.write(`event: ${event}\ndata: ${JSON.stringify(dataObj)}\n\n`);
+  } catch (e) { /* cliente caido: se limpia en close */ }
+}
+
+function statePayload(date, guagua, hora) {
+  const seats = db.sales
+    .filter((s) => s.date === date && s.guagua === guagua && s.hora === hora)
+    .map((s) => ({
+      seat: s.seat, user_id: s.user_id, user_name: s.user_name, customer: s.customer,
+      phone: s.phone, destino: s.destino, precio: s.precio, sale_time: s.saleTime,
+    }))
+    .sort((a, b) => a.seat - b.seat);
+  return { rev: db.rev, seats };
+}
+
+/** Empuja a todos los suscriptores del canal (y a los duplicados por si acaso). */
+function broadcast(date, guagua, hora, extraEvent, extraData) {
+  const set = channels.get(chanKey(date, guagua, hora));
+  if (!set || set.size === 0) return;
+  const payload = statePayload(date, guagua, hora);
+  for (const res of set) {
+    if (extraEvent) sseSend(res, extraEvent, extraData);
+    sseSend(res, 'state', payload);
+  }
+}
+
+// latido para mantener NATs/firewalls despiertos
+setInterval(() => {
+  for (const set of channels.values())
+    for (const res of set) { try { res.write(': ping\n\n'); } catch (e) {} }
+}, 15000).unref();
+
+// ================================================================
+//  Registro interno de usuarios (manual y automatico comparten codigo)
+// ================================================================
+function createUser(username, password, name, auto) {
+  if (!username || !password) return { err: 'username y password requeridos' };
+  if (db.users.some((u) => u.username === username)) return { err: 'usuario existe' };
+  const salt = crypto.randomBytes(8).toString('hex');
+  const user = {
+    id: db.nextUserId++, username, name: name || username, salt,
+    hash: hashPass(password, salt), auto: !!auto, created: Date.now(),
+  };
+  db.users.push(user); persist();
+  return { user };
+}
+
 // ---------------- API ----------------
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x');
   const p = url.pathname;
 
-  // Registro de gestores (administracion local / curl)
+  // ---- AUTO-REGISTRO ESTILO ARCANECHAT/CHATMAIL (/secret-api/new-user) ----
+  if (p === '/api/auto-register' && req.method === 'POST') {
+    if (!PROVISION_OPEN) return send(res, 403, { error: 'provisionamiento cerrado' });
+    const key = req.headers['x-provision-key'] || '';
+    if (key !== PROVISION_KEY) return send(res, 403, { error: 'clave de provision invalida' });
+    const b = await readBody(req);
+    const login = String(b.login || '').toLowerCase().replace(/[^a-z0-9._-]/g, '').slice(0, 32);
+    const password = String(b.password || '');
+    const name = String(b.name || '').slice(0, 40);
+    if (!login || password.length < 8) return send(res, 400, { error: 'login y password(>=8) requeridos' });
+    let u = db.users.find((x) => x.username === login);
+    let created = false;
+    if (!u) {
+      const r = createUser(login, password, name || ('Gestor-' + login.slice(-4)), true);
+      if (r.err) return send(res, 409, { error: r.err });
+      u = r.user; created = true;
+      console.log(`AUTO-REGISTRO: ${login} (${created ? 'creado' : 'existia'})`);
+    } else if (hashPass(password, u.salt) !== u.hash) {
+      // existe con otra clave derivada: no secuestramos cuentas ajenas
+      return send(res, 409, { error: 'usuario existe con otra clave' });
+    }
+    const token = sign({ uid: u.id, exp: Date.now() / 1000 + 86400 * 30 });
+    return send(res, 200, { ok: true, created, token, id: u.id, username: u.username, name: u.name });
+  }
+
+  // ---- Config publica (incluye dominio y flags de provision para la APK) ----
+  if (p === '/api/config') {
+    return send(res, 200, Object.assign({}, CONFIG, {
+      domain: process.env.GUAGUA_DOMAIN || 'guagua.local',
+      provision_open: PROVISION_OPEN,
+    }));
+  }
+
+  // Registro manual de gestores (administracion local / curl)
   if (p === '/api/user' && req.method === 'POST') {
     const b = await readBody(req);
-    if (!b.username || !b.password) return send(res, 400, { error: 'username y password requeridos' });
-    if (db.users.some((u) => u.username === b.username)) return send(res, 409, { error: 'usuario existe' });
-    const salt = crypto.randomBytes(8).toString('hex');
-    const user = { id: db.nextUserId++, username: b.username, name: b.name || b.username, salt, hash: hashPass(b.password, salt) };
-    db.users.push(user); persist();
-    return send(res, 200, { ok: true, id: user.id });
+    const r = createUser(b.username, b.password, b.name, false);
+    if (r.err) return send(res, r.err === 'usuario existe' ? 409 : 400, { error: r.err });
+    return send(res, 200, { ok: true, id: r.user.id });
   }
 
   if (p === '/api/login' && req.method === 'POST') {
@@ -107,20 +207,30 @@ const server = http.createServer(async (req, res) => {
   const user = db.users.find((x) => x.id === me.uid);
   if (!user) return send(res, 401, { error: 'usuario eliminado' });
 
-  if (p === '/api/config') return send(res, 200, CONFIG);
+  const qDate = url.searchParams.get('date') || '';
+  const qGuagua = url.searchParams.get('guagua') || '';
+  const qHora = url.searchParams.get('hora') || '';
 
+  // Snapshot JSON (fallback del polling clasico de 1 s)
   if (p === '/api/state' && req.method === 'GET') {
-    const date = url.searchParams.get('date') || '';
-    const guagua = url.searchParams.get('guagua') || '';
-    const hora = url.searchParams.get('hora') || '';
-    const seats = db.sales
-      .filter((s) => s.date === date && s.guagua === guagua && s.hora === hora)
-      .map((s) => ({
-        seat: s.seat, user_id: s.user_id, user_name: s.user_name, customer: s.customer,
-        phone: s.phone, destino: s.destino, precio: s.precio, sale_time: s.saleTime,
-      }))
-      .sort((a, b) => a.seat - b.seat);
-    return send(res, 200, { rev: db.rev, seats });
+    return send(res, 200, statePayload(qDate, qGuagua, qHora));
+  }
+
+  // ---- STREAM TIEMPO REAL (SSE): push inmediato, misma semantica de 1 s ----
+  if (p === '/api/events' && req.method === 'GET') {
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive',
+      'X-Accel-Buffering': 'no',
+    });
+    const key = chanKey(qDate, qGuagua, qHora);
+    let set = channels.get(key);
+    if (!set) { set = new Set(); channels.set(key, set); }
+    set.add(res);
+    sseSend(res, 'state', statePayload(qDate, qGuagua, qHora)); // estado inicial inmediato
+    req.on('close', () => { set.delete(res); if (set.size === 0) channels.delete(key); });
+    return;
   }
 
   if (p === '/api/sale' && req.method === 'POST') {
@@ -130,7 +240,11 @@ const server = http.createServer(async (req, res) => {
     if (!b.date || !b.guagua || !b.hora) return send(res, 400, { error: 'falta fecha/guagua/hora' });
     if (!b.customer) return send(res, 400, { error: 'falta nombre del pasajero' });
     const clash = db.sales.find((s) => s.date === b.date && s.guagua === b.guagua && s.hora === b.hora && s.seat === seat);
-    if (clash) return send(res, 409, { error: 'asiento ya vendido', by: clash.user_name });
+    if (clash) {
+      // conflicto: empuja el estado actualizado al canal para que todos lo vean ya
+      broadcast(b.date, b.guagua, b.hora);
+      return send(res, 409, { error: 'asiento ya vendido', by: clash.user_name });
+    }
     const sale = {
       id: db.nextSaleId++, seat, date: b.date, guagua: b.guagua, hora: b.hora,
       user_id: user.id, user_name: user.name,
@@ -139,6 +253,7 @@ const server = http.createServer(async (req, res) => {
       saleTime: Date.now(),
     };
     db.sales.push(sale); db.rev++; persist();
+    broadcast(sale.date, sale.guagua, sale.hora);
     console.log(`VENTA #${sale.id}: asiento ${seat} ${sale.date}|${sale.guagua}|${sale.hora} -> ${sale.customer} por ${sale.user_name}`);
     return send(res, 200, { ok: true, id: sale.id, rev: db.rev });
   }
@@ -147,7 +262,9 @@ const server = http.createServer(async (req, res) => {
     const b = await readBody(req);
     const idx = db.sales.findIndex((s) => s.id === b.id && s.user_id === user.id);
     if (idx < 0) return send(res, 403, { error: 'solo puedes cancelar tus propias ventas' });
+    const s = db.sales[idx];
     db.sales.splice(idx, 1); db.rev++; persist();
+    broadcast(s.date, s.guagua, s.hora);
     return send(res, 200, { ok: true });
   }
 
@@ -156,5 +273,6 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`GuaguaPass server en http://0.0.0.0:${PORT}`);
-  console.log("Crea gestores con: curl -X POST http://localhost:%d/api/user -d '{\"username\":\"maria\",\"password\":\"secreta\",\"name\":\"María\"}'", PORT);
+  console.log(`Auto-registro (metodo arcanechat): ${PROVISION_OPEN ? 'ABIERTO' : 'CERRADO'} · clave: ${PROVISION_KEY}`);
+  console.log("Manual: curl -X POST http://localhost:%d/api/user -d '{\"username\":\"maria\",\"password\":\"secreta\",\"name\":\"María\"}'", PORT);
 });

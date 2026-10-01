@@ -25,10 +25,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Panel del gestor: elige guagua, fecha y hora; ve la rejilla de asientos en tiempo real
- * (polling cada 1 segundo) y registra la venta.
+ * Panel del gestor: elige guagua, fecha y hora; ve la rejilla de asientos en tiempo real.
+ * Sincronizacion ESTILO TIEMPO REAL: stream SSE (push inmediato del servidor) con
+ * fallback a polling de 1 segundo sobre /api/state si el stream cae.
  */
 public class MainActivity extends Activity {
 
@@ -41,6 +43,11 @@ public class MainActivity extends Activity {
     private Runnable pollTask;
     private boolean fetching = false;
     private volatile long lastRev = -1;
+    // estado del stream SSE
+    private Thread sseThread;
+    private AtomicBoolean sseStop;
+    private volatile boolean sseAlive = false;
+    private volatile String sseKey = "";
 
     // estado traido del servidor
     private String selectedDate;
@@ -225,7 +232,7 @@ public class MainActivity extends Activity {
             .show();
     }
 
-    // ---------- Sincronizacion cada 1 segundo ----------
+    // ---------- Sincronizacion en tiempo real (SSE push + fallback 1 s) ----------
     private void refreshNow() { schedulePoll(0); }
 
     private void schedulePoll(long delay) {
@@ -234,16 +241,27 @@ public class MainActivity extends Activity {
         ui.postDelayed(pollTask, delay);
     }
 
+    private String currentKey() {
+        final String guagua = spGuagua.getSelectedItem() == null ? "" : spGuagua.getSelectedItem().toString();
+        final String hora = spHora.getSelectedItem() == null ? "" : spHora.getSelectedItem().toString();
+        return selectedDate + "|" + guagua + "|" + hora;
+    }
+
     private void doPoll() {
         if (isFinishing()) return;
-        if (!fetching) {
+        final String key = currentKey();
+        if (!key.equals(sseKey)) {          // cambio de canal: reinicia el stream
+            stopStream();
+            startStream(key);
+        }
+        if (!sseAlive && !fetching) {       // sin stream -> fallback polling cada 1 s
             fetching = true;
             final String date = selectedDate;
-            final String guagua = spGuagua.getSelectedItem() == null ? "" : spGuagua.getSelectedItem().toString();
-            final String hora = spHora.getSelectedItem() == null ? "" : spHora.getSelectedItem().toString();
             new Thread(() -> {
                 String resp = null;
                 try {
+                    String guagua = spGuagua.getSelectedItem() == null ? "" : spGuagua.getSelectedItem().toString();
+                    String hora = spHora.getSelectedItem() == null ? "" : spHora.getSelectedItem().toString();
                     resp = Api.get("/api/state?date=" + Uri.encode(date)
                             + "&guagua=" + Uri.encode(guagua) + "&hora=" + Uri.encode(hora));
                 } catch (Exception e) { /* offline: reintenta igual */ }
@@ -251,15 +269,57 @@ public class MainActivity extends Activity {
                 fetching = false;
                 runOnUiThread(() -> {
                     if (r != null) applyState(r);
-                    tvStatus.setText((r != null ? "● Conectado" : "○ Sin conexión")
-                            + " — sincronización cada 1 s · rev " + lastRev);
-                    tvStatus.setTextColor(r != null ? Color.parseColor("#2E7D32") : Color.parseColor("#C62828"));
+                    updateStatus(r != null);
                     schedulePoll(POLL_MS);
                 });
             }).start();
         } else {
-            schedulePoll(POLL_MS);
+            updateStatus(sseAlive || !fetching);
+            schedulePoll(POLL_MS); // tick suave solo para refrescar indicador
         }
+    }
+
+    private void startStream(final String key) {
+        sseKey = key;
+        sseStop = new AtomicBoolean(false);
+        final AtomicBoolean stop = sseStop;
+        final String[] parts = key.split("\\|", -1);
+        sseThread = new Thread(() -> Api.sse(
+                "/api/events?date=" + Uri.encode(parts[0])
+                        + "&guagua=" + Uri.encode(parts.length > 1 ? parts[1] : "")
+                        + "&hora=" + Uri.encode(parts.length > 2 ? parts[2] : ""),
+                new Api.SseHandler() {
+                    public void onEvent(String event, String data) {
+                        if (stop.get()) return;
+                        if ("state".equals(event)) {
+                            runOnUiThread(() -> { applyState(data); updateStatus(true); });
+                        } else if ("conflict".equals(event)) {
+                            runOnUiThread(() -> Toast.makeText(MainActivity.this,
+                                    "Conflicto: un asiento acaba de venderse por otro gestor", Toast.LENGTH_LONG).show());
+                        }
+                    }
+                    public void onEnd(Exception err) {
+                        if (stop.get()) return;
+                        sseAlive = false;
+                        runOnUiThread(() -> { updateStatus(false); schedulePoll(0); });
+                    }
+                }, stop));
+        sseAlive = true; // optimista: se marca conectado al recibir el primer evento
+        sseThread.setDaemon(true);
+        sseThread.start();
+    }
+
+    private void stopStream() {
+        if (sseStop != null) sseStop.set(true);
+        sseThread = null;
+        sseAlive = false;
+        sseKey = "";
+    }
+
+    private void updateStatus(boolean connected) {
+        tvStatus.setText((connected ? "● Conectado (push tiempo real)" : "○ Sin conexión")
+                + " — rev " + lastRev);
+        tvStatus.setTextColor(connected ? Color.parseColor("#2E7D32") : Color.parseColor("#C62828"));
     }
 
     /** Parseo defensivo: /api/state devuelve {"rev":N,"seats":[{"seat":5,"user_id":2,...},...]} */
@@ -448,6 +508,7 @@ public class MainActivity extends Activity {
     protected void onPause() {
         super.onPause();
         if (pollTask != null) ui.removeCallbacks(pollTask);
+        stopStream(); // cierra el stream SSE; al volver se reabre en onResume
     }
 
     @Override

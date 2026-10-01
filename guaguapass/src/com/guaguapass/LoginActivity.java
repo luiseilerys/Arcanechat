@@ -28,6 +28,7 @@ public class LoginActivity extends Activity {
         super.onCreate(b);
         Session.load(this);
         Api.loadBaseUrl(this);
+        Identity.load(this); // credenciales derivadas estilo chatmail (seed local)
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
@@ -59,17 +60,42 @@ public class LoginActivity extends Activity {
 
         btnLogin = new Button(this);
         btnLogin.setText("INICIAR SESIÓN");
-        btnLogin.setOnClickListener(v -> doLogin(false));
+        btnLogin.setOnClickListener(v -> doLogin(false, false));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, dp(52));
         lp.topMargin = dp(18);
         root.addView(btnLogin, lp);
+
+        // Boton estilo ARCANECHAT: "crear gestor automaticamente"
+        Button btnAuto = new Button(this);
+        btnAuto.setText("⚡ ENTRAR AUTOMÁTICO (nuevo gestor)");
+        btnAuto.setAllCaps(false);
+        LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(-1, dp(52));
+        lp2.topMargin = dp(8);
+        root.addView(btnAuto, lp2);
+        btnAuto.setOnClickListener(v -> doLogin(true, true));
+
+        TextView hint = new TextView(this);
+        hint.setText("El boton automatico deriva un usuario y contraseña al azar\n"
+                + "(gg-xxxxxx) y los registra en el servidor sin captcha,\n"
+                + "igual que ArcaneChat/chatmail. Tambien se intenta solo si\n"
+                + "hay sesion previa guardada.");
+        hint.setTextColor(Color.parseColor("#80CBC4"));
+        hint.setTextSize(11);
+        hint.setPadding(0, dp(14), 0, 0);
+        hint.setGravity(Gravity.CENTER);
+        root.addView(hint);
 
         ScrollView sv = new ScrollView(this);
         sv.addView(root);
         setContentView(sv);
 
-        // Autologin silencioso con credenciales guardadas
-        if (Session.user() != null && Session.pass() != null) doLogin(true);
+        // Autologin silencioso: primero con credenciales explicitas guardadas,
+        // y si no hay, con la identidad derivada (metodo arcanechat).
+        if (Session.token(this) != null && Session.user() != null && Session.pass() != null) {
+            doLogin(false, false);
+        } else {
+            doLogin(true, false);
+        }
     }
 
     private EditText input(String hint, String val, boolean pass) {
@@ -87,19 +113,37 @@ public class LoginActivity extends Activity {
         return e;
     }
 
-    private void doLogin(final boolean silent) {
+    /**
+     * @param auto      true = usa la identidad derivada (metodo arcanechat); false = formulario.
+     * @param forceShow true = muestra resultados en Toast aunque sea arranque silencioso.
+     */
+    private void doLogin(final boolean auto, final boolean forceShow) {
         if (busy) return;
         busy = true;
-        if (!silent) btnLogin.setText("Conectando...");
+        btnLogin.setText("Conectando...");
         final String url = etUrl.getText().toString().trim();
-        final String u = etUser.getText().toString().trim();
-        final String pw = etPass.getText().toString();
+        final String u = auto ? Identity.login() : etUser.getText().toString().trim();
+        final String pw = auto ? Identity.password() : etPass.getText().toString();
         if (!url.isEmpty()) Api.saveBaseUrl(this, url);
         new Thread(() -> {
             String err = null;
             try {
                 String body = "{\"username\":" + jq(u) + ",\"password\":" + jq(pw) + "}";
-                String resp = Api.post("/api/login", body);
+                String resp;
+                if (auto) {
+                    // Paso 1: intentar login con la identidad derivada (cuenta ya creada antes)
+                    try {
+                        resp = Api.post("/api/login", body);
+                    } catch (Api.ApiException e401) {
+                        if (e401.code != 401) throw e401;
+                        // Paso 2: no existe -> AUTO-REGISTRO tipo /secret-api/new-user de chatmail
+                        String rb = "{\"login\":" + jq(u) + ",\"password\":" + jq(pw)
+                                + ",\"name\":" + jq(Identity.name()) + "}";
+                        resp = Api.postWith("/api/auto-register", rb, "X-Provision-Key", Identity.PROVISION_KEY);
+                    }
+                } else {
+                    resp = Api.post("/api/login", body);
+                }
                 String token = Api.jstr(resp, "token");
                 if (token == null) throw new Exception("respuesta invalida");
                 int uid = Integer.parseInt(extractNum(resp, "id"));
@@ -115,7 +159,7 @@ public class LoginActivity extends Activity {
                     Toast.makeText(this, "Bienvenido " + u, Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(this, MainActivity.class));
                     finish();
-                } else if (!silent) {
+                } else if (forceShow || !auto) {
                     Toast.makeText(this, "Error: " + e, Toast.LENGTH_LONG).show();
                 } else {
                     // autologin fallo: deja el formulario relleno para reintento manual
