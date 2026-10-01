@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Paleta modo oscuro: se aplica automaticamente con Theme.Material.DayNight -->
+<!-- Paleta modo oscuro: aplicada por los qualificadores night/v29 de styles.xml -->
 <resources>
     <color name="primary">#4DB6AC</color>
     <color name="primaryDark">#00897B</color>
