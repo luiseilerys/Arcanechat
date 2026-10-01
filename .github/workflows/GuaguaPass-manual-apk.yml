@@ -43,13 +43,23 @@ jobs:
           java-version: 17
           distribution: 'temurin'
 
-      - name: Instalar Android SDK (build-tools 34.0.0 + platform android-34)
+      # Se instala SOLO cmdline-tools (sin el paquete obsoleto 'tools', que era
+      # la causa del error "Failed to find package 'tools'"). El resto de
+      # componentes se instalan explícitamente con sdkmanager.
+      - name: Instalar Android SDK (cmdline-tools)
         uses: android-actions/setup-android@v3
+        with:
+          packages: ''
+          log-approved-licenses: true
 
-      - name: Asegurar componentes exactos que usa build.sh
+      - name: Instalar componentes exactos que usa build.sh
         run: |
-          sdkmanager --install "build-tools;34.0.0" "platforms;android-34" >/dev/null
-          echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
+          yes | sdkmanager --licenses >/dev/null 2>&1 || true
+          sdkmanager --install "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          # Verificación temprana: si falta algo, falla aquí y no en build.sh
+          test -x "$ANDROID_HOME/build-tools/34.0.0/aapt2"
+          test -x "$ANDROID_HOME/build-tools/34.0.0/apksigner"
+          test -f "$ANDROID_HOME/platforms/android-34/android.jar"
 
       - name: Compilar la APK (guaguapass/build.sh)
         working-directory: guaguapass
