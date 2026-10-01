@@ -1,11 +1,18 @@
 # Workflow para generar la APK de GuaguaPass de forma MANUAL.
+# Cómo usarlo: GitHub -> Actions -> "Build GuaguaPass APK (Manual)" ->
+# "Run workflow" -> elegir parámetros -> "Run workflow".
+#
+# La APK se compila con guaguapass/build.sh (aapt2 + javac + d8 + zipalign +
+# apksigner, sin Gradle) y queda firmada con el keystore de debug del propio
+# script (out/guagua.keystore). Resultado: guaguapass/out/GuaguaPass.apk,
+# que se sube como artefacto descargable.
 name: Build GuaguaPass APK (Manual)
 
 on:
   workflow_dispatch:
     inputs:
       build_server:
-        description: "Incluir también el empaquetado del servidor Node.js"
+        description: "Incluir también el empaquetado del servidor Node.js (server/dist-guaguaserver.tar.gz)"
         type: boolean
         required: true
         default: false
@@ -30,19 +37,29 @@ jobs:
       - name: Checkout del repositorio
         uses: actions/checkout@v5
 
-      - name: Configurar JDK 17
+      - name: Configurar JDK 17 (necesario para javac/keytool/apksigner)
         uses: actions/setup-java@v5
         with:
           java-version: 17
           distribution: 'temurin'
 
-      - name: Instalar Android SDK
+      # Se instala SOLO cmdline-tools (sin el paquete obsoleto 'tools', que era
+      # la causa del error "Failed to find package 'tools'"). El resto de
+      # componentes se instalan explícitamente con sdkmanager.
+      - name: Instalar Android SDK (cmdline-tools)
         uses: android-actions/setup-android@v3
+        with:
+          packages: ''
+          log-approved-licenses: true
 
-      - name: Asegurar componentes exactos
+      - name: Instalar componentes exactos que usa build.sh
         run: |
-          sdkmanager --install "build-tools;34.0.0" "platforms;android-34" >/dev/null
-          echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
+          yes | sdkmanager --licenses >/dev/null 2>&1 || true
+          sdkmanager --install "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          # Verificación temprana: si falta algo, falla aquí y no en build.sh
+          test -x "$ANDROID_HOME/build-tools/34.0.0/aapt2"
+          test -x "$ANDROID_HOME/build-tools/34.0.0/apksigner"
+          test -f "$ANDROID_HOME/platforms/android-34/android.jar"
 
       - name: Compilar la APK (guaguapass/build.sh)
         working-directory: guaguapass
