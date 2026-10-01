@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#00695C</color>
+    <color name="primaryDark">#004D40</color>
+    <color name="accent">#FF6F00</color>
+    <color name="free">#E0E0E0</color>
+    <color name="taken">#EF5350</color>
+    <color name="mine">#66BB6A</color>
+    <color name="bg">#F5F5F5</color>
+    <color name="text">#212121</color>
+</resources>
