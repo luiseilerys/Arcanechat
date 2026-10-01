@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Banner degradado del login (mejora visual v1.1) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="360dp"
+    android:height="220dp"
+    android:viewportWidth="360"
+    android:viewportHeight="220">
+    <path
+        android:pathData="M0,0 h360 v220 h-360 z">
+        <aapt:attr xmlns:aapt="http://schemas.android.com/aapt" name="android:fillColor">
+            <gradient
+                android:startX="0" android:startY="0"
+                android:endX="360" android:endY="220"
+                android:type="linear">
+                <item android:offset="0" android:color="#FF004D40" />
+                <item android:offset="1" android:color="#FF00897B" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- ventanillas iluminadas del bus decorativo -->
+    <path android:pathData="M118,150 h16 v12 h-16 z" android:fillColor="#38FFFFFF" />
+    <path android:pathData="M140,150 h16 v12 h-16 z" android:fillColor="#38FFFFFF" />
+    <path android:pathData="M162,150 h16 v12 h-16 z" android:fillColor="#38FFFFFF" />
+    <path android:pathData="M184,150 h16 v12 h-16 z" android:fillColor="#38FFFFFF" />
+    <path android:pathData="M206,150 h16 v12 h-16 z" android:fillColor="#38FFFFFF" />
+    <path android:pathData="M228,150 h16 v12 h-16 z" android:fillColor="#38FFFFFF" />
+</vector>

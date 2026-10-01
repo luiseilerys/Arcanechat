@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="60dp"
+    android:viewportWidth="120"
+    android:viewportHeight="60">
+    <path
+        android:pathData="M6,12 Q6,6 12,6 H100 Q114,6 116,20 L116,40 Q116,46 110,46 H100 A9,9 0 0 1 82,46 H42 A9,9 0 0 1 24,46 H12 Q6,46 6,40 Z"
+        android:fillColor="#FFFFFFFF" />
+    <path android:pathData="M14,12 h14 v12 h-14 z" android:fillColor="#FFB2DFDB" />
+    <path android:pathData="M32,12 h14 v12 h-14 z" android:fillColor="#FFB2DFDB" />
+    <path android:pathData="M50,12 h14 v12 h-14 z" android:fillColor="#FFB2DFDB" />
+    <path android:pathData="M68,12 h14 v12 h-14 z" android:fillColor="#FFB2DFDB" />
+    <path android:pathData="M88,10 h12 q8,2 10,14 h-22 z" android:fillColor="#FF80CBC4" />
+    <path android:pathData="M6,36 h110 v4 h-110 z" android:fillColor="#FFFF6F00" />
+    <circle cx="33" cy="50" r="8" android:fillColor="#FF212121" />
+    <circle cx="91" cy="50" r="8" android:fillColor="#FF212121" />
+    <circle cx="33" cy="50" r="3" android:fillColor="#FF9E9E9E" />
+    <circle cx="91" cy="50" r="3" android:fillColor="#FF9E9E9E" />
+</vector>

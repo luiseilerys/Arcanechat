@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paleta modo oscuro: se aplica automaticamente con Theme.Material.DayNight -->
+<resources>
+    <color name="primary">#4DB6AC</color>
+    <color name="primaryDark">#00897B</color>
+    <color name="accent">#FFB300</color>
+    <color name="free">#37474F</color>
+    <color name="taken">#E57373</color>
+    <color name="mine">#81C784</color>
+    <color name="bg">#121212</color>
+    <color name="text">#ECECEC</color>
+    <color name="cardBg">#1E2A2E</color>
+    <color name="seatTextFree">#CFD8DC</color>
+    <color name="ok">#66BB6A</color>
+    <color name="bad">#EF5350</color>
+    <color name="muted">#9E9E9E</color>
+</resources>

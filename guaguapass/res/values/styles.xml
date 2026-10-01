@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
+    <!-- DayNight: claro/oscuro automatico segun el sistema (mejora visual v1.1) -->
+    <style name="AppTheme" parent="android:Theme.Material.DayNight.NoActionBar">
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primaryDark</item>
         <item name="android:colorAccent">@color/accent</item>
         <item name="android:windowBackground">@color/bg</item>
+        <item name="android:statusBarColor">@color/primaryDark</item>
+        <item name="android:navigationBarColor">@color/primaryDark</item>
+        <item name="android:windowAnimationStyle">@style/WindowFade</item>
+    </style>
+
+    <!-- Transicion suave entre pantallas (Login -> Main -> Sale) -->
+    <style name="WindowFade" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/fade_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/fade_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/fade_out</item>
+        <item name="android:activityCloseExitAnimation">@anim/fade_in</item>
     </style>
 </resources>

@@ -20,7 +20,7 @@ public class LoginActivity extends Activity {
 
     private EditText etUser, etPass, etUrl;
     private TextView tvTitle, tvSub;
-    private Button btnLogin;
+    private Button btnLogin, btnAuto;
     private boolean busy = false;
 
     @Override
@@ -32,8 +32,26 @@ public class LoginActivity extends Activity {
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setPadding(dp(28), dp(60), dp(28), dp(28));
-        root.setBackgroundColor(Color.parseColor("#004D40"));
+        root.setPadding(dp(28), dp(40), dp(28), dp(28));
+        root.setBackgroundColor(color(R.color.bg));
+
+        // Tarjeta-banner superior con degradado + icono del bus (mejora visual v1.1)
+        LinearLayout banner = new LinearLayout(this);
+        banner.setOrientation(LinearLayout.VERTICAL);
+        banner.setGravity(Gravity.CENTER_HORIZONTAL);
+        banner.setBackgroundResource(R.drawable.login_banner);
+        int bh = dp(190);
+        GradientDrawable bannerBg = new GradientDrawable();
+        bannerBg.setCornerRadii(new float[] { dp(24), dp(24), dp(24), dp(24), 0, 0, 0, 0 });
+        banner.setBackground(bannerBg);
+        root.addView(banner, new LinearLayout.LayoutParams(-1, bh));
+
+        android.widget.ImageView bus = new android.widget.ImageView(this);
+        bus.setImageResource(R.drawable.ic_bus);
+        LinearLayout.LayoutParams buslp = new LinearLayout.LayoutParams(dp(96), dp(48));
+        buslp.topMargin = dp(26);
+        bus.setLayoutParams(buslp);
+        banner.addView(bus);
 
         tvTitle = new TextView(this);
         tvTitle.setText("GuaguaPass");
@@ -41,49 +59,74 @@ public class LoginActivity extends Activity {
         tvTitle.setTextSize(30);
         tvTitle.setTypeface(Typeface.DEFAULT_BOLD);
         tvTitle.setGravity(Gravity.CENTER);
-        root.addView(tvTitle);
+        banner.addView(tvTitle);
 
         tvSub = new TextView(this);
-        tvSub.setText("Coordinacion de venta de pasajes");
+        tvSub.setText(getString(R.string.tagline));
         tvSub.setTextColor(Color.parseColor("#B2DFDB"));
         tvSub.setTextSize(14);
         tvSub.setGravity(Gravity.CENTER);
-        tvSub.setPadding(0, dp(4), 0, dp(30));
-        root.addView(tvSub);
+        tvSub.setPadding(0, dp(4), 0, 0);
+        banner.addView(tvSub);
 
-        etUrl = input("URL servidor (http://IP:3000)", Api.BASE, false);
+        // Formulario dentro de una tarjeta elevada
+        LinearLayout card = new LinearLayout(this);
+        card.setOrientation(LinearLayout.VERTICAL);
+        card.setPadding(dp(20), dp(18), dp(20), dp(18));
+        GradientDrawable cardBg = new GradientDrawable();
+        cardBg.setCornerRadii(new float[] { dp(24), dp(24), dp(24), dp(24), 0, 0, 0, 0 });
+        cardBg.setColor(color(R.color.cardBg));
+        cardBg.setStroke(dp(1), Color.parseColor("#1A000000"));
+        card.setBackground(cardBg);
+        card.setElevation(dp(6));
+        root.addView(card, new LinearLayout.LayoutParams(-1, -2));
+
+        etUrl = input("URL del servidor (http://IP:3000)", Api.BASE, false);
         etUser = input("Usuario", Session.user(), false);
         etPass = input("Contraseña", Session.pass(), true);
-        root.addView(etUrl);
-        root.addView(etUser);
-        root.addView(etPass);
+        card.addView(etUrl);
+        card.addView(etUser);
+        card.addView(etPass);
 
         btnLogin = new Button(this);
         btnLogin.setText("INICIAR SESIÓN");
+        btnLogin.setTextColor(Color.WHITE);
+        btnLogin.setStateListAnimator(null);
+        GradientDrawable loginBg = new GradientDrawable();
+        loginBg.setCornerRadius(dp(14));
+        loginBg.setColor(color(R.color.primary));
+        btnLogin.setBackground(loginBg);
         btnLogin.setOnClickListener(v -> doLogin(false, false));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, dp(52));
         lp.topMargin = dp(18);
-        root.addView(btnLogin, lp);
+        card.addView(btnLogin, lp);
 
-        // Boton estilo ARCANECHAT: "crear gestor automaticamente"
-        Button btnAuto = new Button(this);
+        // Boton estilo ARCANECHAT: "crear gestor automaticamente" (borde accent, v1.1)
+        btnAuto = new Button(this);
         btnAuto.setText("⚡ ENTRAR AUTOMÁTICO (nuevo gestor)");
         btnAuto.setAllCaps(false);
+        btnAuto.setTextColor(color(R.color.accent));
+        btnAuto.setStateListAnimator(null);
+        GradientDrawable autoBg = new GradientDrawable();
+        autoBg.setCornerRadius(dp(14));
+        autoBg.setColor(Color.TRANSPARENT);
+        autoBg.setStroke(dp(2), color(R.color.accent));
+        btnAuto.setBackground(autoBg);
+        btnAuto.setOnClickListener(v -> doLogin(true, true));
         LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(-1, dp(52));
         lp2.topMargin = dp(8);
-        root.addView(btnAuto, lp2);
-        btnAuto.setOnClickListener(v -> doLogin(true, true));
+        card.addView(btnAuto, lp2);
 
         TextView hint = new TextView(this);
-        hint.setText("El boton automatico deriva un usuario y contraseña al azar\n"
+        hint.setText("El botón automático deriva un usuario y contraseña al azar\n"
                 + "(gg-xxxxxx) y los registra en el servidor sin captcha,\n"
-                + "igual que ArcaneChat/chatmail. Tambien se intenta solo si\n"
-                + "hay sesion previa guardada.");
-        hint.setTextColor(Color.parseColor("#80CBC4"));
+                + "igual que ArcaneChat/chatmail. También se intenta solo si\n"
+                + "hay sesión previa guardada.");
+        hint.setTextColor(color(R.color.muted));
         hint.setTextSize(11);
         hint.setPadding(0, dp(14), 0, 0);
         hint.setGravity(Gravity.CENTER);
-        root.addView(hint);
+        card.addView(hint);
 
         ScrollView sv = new ScrollView(this);
         sv.addView(root);
@@ -98,15 +141,25 @@ public class LoginActivity extends Activity {
         }
     }
 
+    private int color(int resId) { return getResources().getColor(resId, null); }
+
     private EditText input(String hint, String val, boolean pass) {
         EditText e = new EditText(this);
         e.setHint(hint);
         if (val != null) e.setText(val);
-        e.setTextColor(Color.WHITE);
-        e.setHintTextColor(Color.parseColor("#80CBC4"));
+        e.setTextColor(color(R.color.text));
+        e.setHintTextColor(color(R.color.muted));
+        e.setSingleLine();
+        e.setTextSize(15);
         if (pass) e.setInputType(android.text.InputType.TYPE_CLASS_TEXT
                 | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
         else e.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
+        // campo con fondo redondeado sutil (v1.1)
+        GradientDrawable fbg = new GradientDrawable();
+        fbg.setCornerRadius(dp(12));
+        fbg.setColor(Color.parseColor("#11000000"));
+        e.setBackground(fbg);
+        e.setPadding(dp(14), dp(12), dp(14), dp(12));
         LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(-1, -2);
         p.topMargin = dp(10);
         e.setLayoutParams(p);

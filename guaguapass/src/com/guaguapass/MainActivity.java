@@ -11,6 +11,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,7 +39,7 @@ public class MainActivity extends Activity {
     private static final int POLL_MS = 1000;
 
     private Spinner spGuagua, spHora;
-    private TextView tvDate, tvStatus, tvLegend, tvSales;
+    private TextView tvDate, tvStatus, tvLegend, tvSales, tvOccupancy, tvTotal;
     private LinearLayout grid;
     private final Handler ui = new Handler(Looper.getMainLooper());
     private Runnable pollTask;
@@ -48,6 +50,9 @@ public class MainActivity extends Activity {
     private AtomicBoolean sseStop;
     private volatile boolean sseAlive = false;
     private volatile String sseKey = "";
+    // indicador de "actualizado hace N s" (mejora visual v1.1)
+    private long lastSyncAt = 0;
+    private Runnable clockTask;
 
     // estado traido del servidor
     private String selectedDate;
@@ -88,7 +93,7 @@ public class MainActivity extends Activity {
         bar.setOrientation(LinearLayout.HORIZONTAL);
         bar.setGravity(Gravity.CENTER_VERTICAL);
         TextView title = new TextView(this);
-        title.setText("GuaguaPass");
+        title.setText("🚌 GuaguaPass");
         title.setTextSize(19);
         title.setTypeface(Typeface.DEFAULT_BOLD);
         title.setTextColor(color(R.color.primary));
@@ -98,6 +103,20 @@ public class MainActivity extends Activity {
         Button btnOut = smallBtn("Salir " + Session.user());
         btnOut.setOnClickListener(v -> { Session.clear(this); System.exit(0); });
         bar.addView(btnOut);
+
+        // Chip del gestor conectado (mejora visual v1.1)
+        TextView chip = new TextView(this);
+        chip.setText("👤 " + (Session.user() == null ? "gestor" : Session.user()));
+        chip.setTextSize(11);
+        chip.setTextColor(color(R.color.primaryDark));
+        chip.setPadding(dp(10), dp(3), dp(10), dp(3));
+        GradientDrawable chipBg = new GradientDrawable();
+        chipBg.setCornerRadius(dp(20));
+        chipBg.setColor(Color.parseColor("#2200695C"));
+        chip.setBackground(chipBg);
+        LinearLayout.LayoutParams chiplp = new LinearLayout.LayoutParams(-2, -2);
+        chiplp.bottomMargin = dp(4);
+        root.addView(chip, chiplp);
 
         tvDate = new TextView(this);
         tvDate.setTextSize(15);
@@ -130,15 +149,72 @@ public class MainActivity extends Activity {
 
         tvStatus = new TextView(this);
         tvStatus.setTextSize(12);
-        tvStatus.setTextColor(Color.parseColor("#757575"));
+        tvStatus.setTextColor(color(R.color.muted));
         tvStatus.setPadding(0, dp(6), 0, dp(2));
         root.addView(tvStatus);
 
-        tvLegend = new TextView(this);
-        tvLegend.setTextSize(12);
-        tvLegend.setText("Libre · Ocupado por otro · Tu venta · Toca un asiento libre para vender");
-        tvLegend.setPadding(0, dp(2), 0, dp(8));
+        // Leyenda con puntos de colores reales (mejora visual v1.1)
+        LinearLayout legend = new LinearLayout(this);
+        legend.setOrientation(LinearLayout.HORIZONTAL);
+        legend.setGravity(Gravity.CENTER_VERTICAL);
+        legend.setPadding(0, dp(2), 0, dp(8));
+        legend.addView(legendDot(R.color.free, "Libre"));
+        legend.addView(legendDot(R.color.taken, "Ocupado"));
+        legend.addView(legendDot(R.color.mine, "Tu venta"));
+        TextView legHint = new TextView(this);
+        legHint.setText("· toca un asiento libre para vender");
+        legHint.setTextSize(11);
+        legHint.setTextColor(color(R.color.muted));
+        legend.addView(legHint);
+        root.addView(legend);
+        tvLegend = new TextView(this); // se conserva por compatibilidad, oculto
+        tvLegend.setVisibility(View.GONE);
         root.addView(tvLegend);
+
+        // Tarjeta de ocupacion: numero grande + barra de progreso (v1.1)
+        LinearLayout occCard = new LinearLayout(this);
+        occCard.setOrientation(LinearLayout.VERTICAL);
+        GradientDrawable cardBg = new GradientDrawable();
+        cardBg.setCornerRadius(dp(14));
+        cardBg.setColor(color(R.color.cardBg));
+        cardBg.setStroke(dp(1), Color.parseColor("#22000000"));
+        occCard.setBackground(cardBg);
+        occCard.setPadding(dp(14), dp(10), dp(14), dp(12));
+        LinearLayout.LayoutParams occLp = new LinearLayout.LayoutParams(-1, -2);
+        occLp.bottomMargin = dp(10);
+        root.addView(occCard, occLp);
+
+        LinearLayout occRow = new LinearLayout(this);
+        occRow.setOrientation(LinearLayout.HORIZONTAL);
+        occRow.setGravity(Gravity.CENTER_VERTICAL);
+        occCard.addView(occRow);
+        tvOccupancy = new TextView(this);
+        tvOccupancy.setTextSize(22);
+        tvOccupancy.setTypeface(Typeface.DEFAULT_BOLD);
+        tvOccupancy.setTextColor(color(R.color.primary));
+        occRow.addView(tvOccupancy, new LinearLayout.LayoutParams(0, -2, 1f));
+        tvTotal = new TextView(this);
+        tvTotal.setTextSize(13);
+        tvTotal.setTextColor(color(R.color.muted));
+        occRow.addView(tvTotal);
+
+        View barTrack = new View(this);
+        GradientDrawable trackBg = new GradientDrawable();
+        trackBg.setCornerRadius(dp(6));
+        trackBg.setColor(Color.parseColor("#33000000"));
+        barTrack.setBackground(trackBg);
+        LinearLayout.LayoutParams tlp2 = new LinearLayout.LayoutParams(-1, dp(10));
+        tlp2.topMargin = dp(8);
+        occCard.addView(barTrack, tlp2);
+        occupancyBar = new View(this);
+        GradientDrawable fillBg = new GradientDrawable();
+        fillBg.setCornerRadius(dp(6));
+        fillBg.setColor(color(R.color.accent));
+        occupancyBar.setBackground(fillBg);
+        LinearLayout.LayoutParams flp = new LinearLayout.LayoutParams(0, dp(10));
+        flp.topMargin = -dp(10);
+        occCard.addView(occupancyBar, flp);
+        occCard.addView(label("Toca un asiento ocupado para ver el detalle · mantén pulsado para cancelar"));
 
         grid = new LinearLayout(this);
         grid.setOrientation(LinearLayout.VERTICAL);
@@ -146,8 +222,15 @@ public class MainActivity extends Activity {
         root.addView(grid);
 
         Button btnSell = new Button(this);
-        btnSell.setText("+ REGISTRAR VENTA (asiento seleccionado)");
-        LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(-1, dp(50));
+        btnSell.setText("+ REGISTRAR VENTA");
+        btnSell.setAllCaps(false);
+        btnSell.setTextColor(Color.WHITE);
+        GradientDrawable sellBg = new GradientDrawable();
+        sellBg.setCornerRadius(dp(14));
+        sellBg.setColor(color(R.color.primary));
+        btnSell.setBackground(sellBg);
+        btnSell.setStateListAnimator(null);
+        LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(-1, dp(52));
         blp.topMargin = dp(12);
         root.addView(btnSell, blp);
         btnSell.setOnClickListener(v -> openSale(-1));
@@ -157,7 +240,40 @@ public class MainActivity extends Activity {
         tvSales.setTextSize(13);
         tvSales.setTextColor(color(R.color.text));
         tvSales.setLineSpacing(dp(4), 1f);
-        root.addView(tvSales);
+        // tarjeta para la lista de ventas (v1.1)
+        GradientDrawable salesCard = new GradientDrawable();
+        salesCard.setCornerRadius(dp(14));
+        salesCard.setColor(color(R.color.cardBg));
+        salesCard.setStroke(dp(1), Color.parseColor("#22000000"));
+        tvSales.setBackground(salesCard);
+        tvSales.setPadding(dp(14), dp(12), dp(14), dp(12));
+        LinearLayout.LayoutParams slp = new LinearLayout.LayoutParams(-1, -2);
+        slp.topMargin = dp(6);
+        root.addView(tvSales, slp);
+    }
+
+    private View occupancyBar;
+
+    private View legendDot(int colorRes, String txt) {
+        LinearLayout ll = new LinearLayout(this);
+        ll.setOrientation(LinearLayout.HORIZONTAL);
+        ll.setGravity(Gravity.CENTER_VERTICAL);
+        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(-2, -2);
+        llp.rightMargin = dp(12);
+        ll.setLayoutParams(llp);
+        View dot = new View(this);
+        GradientDrawable d = new GradientDrawable();
+        d.setShape(GradientDrawable.OVAL);
+        d.setColor(color(colorRes));
+        d.setStroke(dp(1), Color.parseColor("#33000000"));
+        dot.setBackground(d);
+        ll.addView(dot, new LinearLayout.LayoutParams(dp(12), dp(12)));
+        TextView t = new TextView(this);
+        t.setText(" " + txt);
+        t.setTextSize(11);
+        t.setTextColor(color(R.color.text));
+        ll.addView(t);
+        return ll;
     }
 
     private TextView label(String s) {
@@ -317,16 +433,35 @@ public class MainActivity extends Activity {
     }
 
     private void updateStatus(boolean connected) {
-        tvStatus.setText((connected ? "● Conectado (push tiempo real)" : "○ Sin conexión")
-                + " — rev " + lastRev);
-        tvStatus.setTextColor(connected ? Color.parseColor("#2E7D32") : Color.parseColor("#C62828"));
+        String sync = lastSyncAt == 0 ? "" : " · hace " + Math.max(0, (System.currentTimeMillis() - lastSyncAt) / 1000) + " s";
+        tvStatus.setText((connected ? "● En vivo (push SSE)" : "○ Reintentando conexión…")
+                + " — rev " + lastRev + sync);
+        tvStatus.setTextColor(connected ? color(R.color.ok) : color(R.color.bad));
+    }
+
+    /** Reloj suave para el "hace N s" del indicador de sincronizacion. */
+    private void startClock() {
+        if (clockTask != null) ui.removeCallbacks(clockTask);
+        clockTask = () -> {
+            if (!isFinishing()) {
+                updateStatus(sseAlive || lastSyncAt > System.currentTimeMillis() - POLL_MS * 3);
+                ui.postDelayed(clockTask, 1000);
+            }
+        };
+        ui.postDelayed(clockTask, 1000);
+    }
+
+    private void stopClock() {
+        if (clockTask != null) ui.removeCallbacks(clockTask);
     }
 
     /** Parseo defensivo: /api/state devuelve {"rev":N,"seats":[{"seat":5,"user_id":2,...},...]} */
     private void applyState(String json) {
         long rev = Long.parseLong(LoginActivity.extractNum(json, "rev"));
-        if (rev == lastRev) return; // sin cambios
+        boolean changed = rev != lastRev;
         lastRev = rev;
+        lastSyncAt = System.currentTimeMillis();
+        if (!changed) return; // sin cambios
         sales = new ArrayList<>();
         String arr = extractArray(json, "seats");
         for (String item : splitObjects(arr)) {
@@ -345,6 +480,23 @@ public class MainActivity extends Activity {
         }
         renderGrid();
         renderSales();
+        renderOccupancy(myUidAfterRender());
+    }
+
+    private int myUidAfterRender() { return Session.uid(this); }
+
+    /** Tarjeta de ocupacion: "12/48 vendidos" + barra proporcional (v1.1) */
+    private void renderOccupancy(int myUid) {
+        int total = cols * rows;
+        int n = sales.size();
+        tvOccupancy.setText(n + "/" + total + " vendidos");
+        tvTotal.setText("libres: " + Math.max(0, total - n));
+        if (occupancyBar != null && occupancyBar.getParent() != null) {
+            int w = getResources().getDisplayMetrics().widthPixels - dp(28 + 28 + 14 + 14);
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) occupancyBar.getLayoutParams();
+            lp.width = Math.max(0, (int) ((long) w * n / Math.max(1, total)));
+            occupancyBar.setLayoutParams(lp);
+        }
     }
 
     private void renderGrid() {
@@ -360,6 +512,15 @@ public class MainActivity extends Activity {
                 rowL.addView(seatButton(num, myUid));
             }
             grid.addView(rowL);
+        }
+        // animacion de entrada en cascada de las filas (mejora visual v1.1)
+        for (int i = 0; i < grid.getChildCount(); i++) {
+            View child = grid.getChildAt(i);
+            ScaleAnimation sa = new ScaleAnimation(0.92f, 1f, 0.92f, 1f,
+                    Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            sa.setDuration(180);
+            sa.setStartOffset(i * 18L);
+            child.startAnimation(sa);
         }
     }
 
@@ -377,20 +538,25 @@ public class MainActivity extends Activity {
         Sale occ = null;
         for (Sale s : sales) if (s.seat == num) { occ = s; break; }
         TextView b = new TextView(this);
-        b.setText(String.valueOf(num));
-        b.setTextSize(13);
+        // numero + inicial del comprador en asientos ocupados (v1.1)
+        b.setText(occ == null ? String.valueOf(num)
+                : num + "\n" + initials(occ.customer));
+        b.setTextSize(occ == null ? 13 : 10);
         b.setGravity(Gravity.CENTER);
         GradientDrawable bg = new GradientDrawable();
         bg.setCornerRadius(dp(8));
         if (occ == null) {
-            b.setTextColor(Color.parseColor("#424242"));
+            b.setTextColor(color(R.color.seatTextFree));
             bg.setColor(color(R.color.free));
+            bg.setStroke(dp(1), Color.parseColor("#22000000"));
         } else if (occ.userId == myUid) {
             b.setTextColor(Color.WHITE);
             bg.setColor(color(R.color.mine));
+            bg.setStroke(dp(1), Color.parseColor("#33000000"));
         } else {
             b.setTextColor(Color.WHITE);
             bg.setColor(color(R.color.taken));
+            bg.setStroke(dp(1), Color.parseColor("#33000000"));
         }
         b.setBackground(bg);
         LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(dp(52), dp(46));
@@ -398,11 +564,53 @@ public class MainActivity extends Activity {
         b.setLayoutParams(p);
         if (occ != null) {
             final Sale o = occ;
-            b.setOnLongClickListener(v -> { showSeatInfo(o); return true; });
+            b.setOnClickListener(v -> showSeatInfo(o));
+            b.setOnLongClickListener(v -> { confirmCancel(o); return true; });
         } else {
             b.setOnClickListener(v -> openSale(num));
         }
         return b;
+    }
+
+    static String initials(String name) {
+        if (name == null || name.isEmpty()) return "?";
+        String[] parts = name.trim().split("\\s+");
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < Math.min(2, parts.length); i++)
+            sb.append(parts[i].substring(0, 1).toUpperCase(Locale.US));
+        return sb.toString();
+    }
+
+    /** Cancelar venta propia con confirmacion visual (v1.1). */
+    private void confirmCancel(final Sale s) {
+        if (s.userId != Session.uid(this)) {
+            Toast.makeText(this, "Solo el gestor que vendió #" + s.seat + " puede cancelarla",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        new android.app.AlertDialog.Builder(this)
+            .setTitle("Cancelar asiento #" + s.seat)
+            .setMessage(s.customer + (s.dest == null ? "" : " → " + s.dest)
+                    + "\n" + s.price + " CUP\n\n¿Devolver el asiento a la rejilla?")
+            .setPositiveButton("Cancelar venta", (d, w) -> cancelSale(s))
+            .setNegativeButton("Mantener", null)
+            .show();
+    }
+
+    private void cancelSale(final Sale s) {
+        new Thread(() -> {
+            String err = null;
+            try {
+                Api.post("/api/cancel", "{\"id\":" + s.id + "}");
+            } catch (Exception e) { err = e.getMessage(); }
+            final String e = err;
+            runOnUiThread(() -> {
+                if (e == null) {
+                    Toast.makeText(this, "Asiento #" + s.seat + " liberado", Toast.LENGTH_SHORT).show();
+                    lastRev = -1; refreshNow();
+                } else Toast.makeText(this, "No se pudo cancelar: " + e, Toast.LENGTH_LONG).show();
+            });
+        }).start();
     }
 
     private void showSeatInfo(Sale s) {
@@ -413,19 +621,27 @@ public class MainActivity extends Activity {
 
     private void renderSales() {
         StringBuilder sb = new StringBuilder();
-        SimpleDateFormat hm = new SimpleDateFormat("HH:mm:ss", Locale.US);
+        SimpleDateFormat hm = new SimpleDateFormat("HH:mm", Locale.US);
         hm.setTimeZone(TimeZone.getDefault());
         int myUid = Session.uid(this);
+        double totalCup = 0;
         for (Sale s : sales) {
-            sb.append("#").append(s.seat).append("  ").append(s.customer);
+            boolean mine = s.userId == myUid;
+            if (mine) { try { totalCup += Double.parseDouble(s.price); } catch (Exception ignored) {} }
+            sb.append(mine ? "🟢" : "🔴").append(" #").append(s.seat).append("  ").append(s.customer);
             if (s.dest != null) sb.append(" → ").append(s.dest);
-            sb.append("  ").append(s.price).append(" CUP\n")
-              .append("     ").append(s.userName)
-              .append(s.userId == myUid ? " (tú)" : "")
+            sb.append("  · ").append(s.price).append(" CUP\n")
+              .append("      ").append(s.userName).append(mine ? " (tú)" : "")
               .append(" · ").append(hm.format(new Date(s.saleTime))).append("\n");
         }
         if (sales.isEmpty()) sb.append("— sin ventas en esta salida —");
+        else if (totalCup > 0) sb.append("\n💰 Tus ventas: ").append(fmtMoney(totalCup)).append(" CUP");
         tvSales.setText(sb.toString());
+    }
+
+    static String fmtMoney(double v) {
+        if (v == Math.floor(v)) return String.valueOf((long) v);
+        return String.format(Locale.US, "%.2f", v);
     }
 
     // ---------- Venta ----------
@@ -508,6 +724,7 @@ public class MainActivity extends Activity {
     protected void onPause() {
         super.onPause();
         if (pollTask != null) ui.removeCallbacks(pollTask);
+        stopClock();
         stopStream(); // cierra el stream SSE; al volver se reabre en onResume
     }
 
@@ -516,5 +733,6 @@ public class MainActivity extends Activity {
         super.onResume();
         lastRev = -1;
         refreshNow();
+        startClock();
     }
 }
