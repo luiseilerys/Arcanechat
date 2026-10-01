@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Fallback oscuro para API 24-28 (que no tienen Theme.*.DayNight):
-         se aplica el tema Material oscuro; la paleta oscura ya viene de
-         values-night/colors.xml -->
+    <!-- Modo nocturno (API 24+): tema Material "full dark" + paleta oscura de
+         values-night/colors.xml. Sustituye al antiguo values-v29 que usaba
+         @android:style/Theme.DeviceDefault.DayNight.NoActionBar, estilo que no
+         existe en el android.jar publicable y rompía el link de aapt2. -->
     <style name="AppTheme" parent="@android:style/Theme.Material.NoActionBar">
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primaryDark</item>

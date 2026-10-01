@@ -2,8 +2,11 @@
 <resources>
     <!-- Base (API 24+): Theme.Material.NoActionBar (existe desde API 21).
          El modo claro/oscuro se consigue con los qualificadores:
-         - values-v29/styles.xml -> Theme.DeviceDefault.DayNight.NoActionBar (API 29+)
-         - values-night/styles.xml -> fallback oscuro para API 24-28 -->
+         - values-night/styles.xml -> tema Material "full dark" en API 24+
+         NOTA: no usamos @android:style/Theme.DeviceDefault.DayNight.NoActionBar
+         (ni Theme.Material.DayNight.*) en ningún qualifier porque esos estilos
+         NO existen en el android.jar de la plataforma (son privados del framework
+         / sólo accesibles vía AppCompat) y aapt2 falla al linkear las referencias. -->
     <style name="AppTheme" parent="@android:style/Theme.Material.NoActionBar">
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primaryDark</item>
