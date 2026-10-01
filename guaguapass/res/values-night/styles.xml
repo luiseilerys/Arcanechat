@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Fallback oscuro para API 24-28 (que no tienen Theme.*.DayNight):
+         se aplica el tema Material oscuro; la paleta oscura ya viene de
+         values-night/colors.xml -->
+    <style name="AppTheme" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:colorPrimaryDark">@color/primaryDark</item>
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="android:statusBarColor">@color/primaryDark</item>
+        <item name="android:navigationBarColor">@color/primaryDark</item>
+        <item name="android:windowAnimationStyle">@style/WindowFade</item>
+        <item name="android:colorBackground">@color/bg</item>
+    </style>
+</resources>

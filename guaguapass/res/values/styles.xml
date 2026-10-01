@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- DayNight: claro/oscuro automatico segun el sistema (mejora visual v1.1) -->
-    <style name="AppTheme" parent="android:Theme.Material.DayNight.NoActionBar">
+    <!-- Base (API 24+): Theme.Material.NoActionBar (existe desde API 21).
+         El modo claro/oscuro se consigue con los qualificadores:
+         - values-v29/styles.xml -> Theme.DeviceDefault.DayNight.NoActionBar (API 29+)
+         - values-night/styles.xml -> fallback oscuro para API 24-28 -->
+    <style name="AppTheme" parent="@android:style/Theme.Material.NoActionBar">
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primaryDark</item>
         <item name="android:colorAccent">@color/accent</item>
