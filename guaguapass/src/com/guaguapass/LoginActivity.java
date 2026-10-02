@@ -81,8 +81,8 @@ public class LoginActivity extends Activity {
         card.setElevation(dp(6));
         root.addView(card, new LinearLayout.LayoutParams(-1, -2));
 
-        etUrl = input("URL del servidor (http://IP:3000)", Api.BASE, false);
-        etUser = input("Usuario", Session.user(), false);
+        etUrl = input("URL del servidor", Api.BASE, false);
+        etUser = input("Correo (usuario@arcanechat.me)", Session.user(), false);
         etPass = input("Contraseña", Session.pass(), true);
         card.addView(etUrl);
         card.addView(etUser);
@@ -118,8 +118,8 @@ public class LoginActivity extends Activity {
         card.addView(btnAuto, lp2);
 
         TextView hint = new TextView(this);
-        hint.setText("El botón automático deriva un usuario y contraseña al azar\n"
-                + "(gg-xxxxxx) y los registra en el servidor sin captcha,\n"
+        hint.setText("El botón automático deriva un correo y contraseña al azar\n"
+                + "(xxxxxx@arcanechat.me) y los registra en el servidor sin captcha,\n"
                 + "igual que ArcaneChat/chatmail. También se intenta solo si\n"
                 + "hay sesión previa guardada.");
         hint.setTextColor(color(R.color.muted));

@@ -100,13 +100,17 @@ public class MainActivity extends Activity {
         LinearLayout.LayoutParams tlp = new LinearLayout.LayoutParams(0, -2, 1f);
         root.addView(bar);
         bar.addView(title, tlp);
+        Button btnMail = smallBtn("✉ Correo" + (mailUnread > 0 ? " (" + mailUnread + ")" : ""));
+        btnMail.setOnClickListener(v -> openMailbox());
+        bar.addView(btnMail);
         Button btnOut = smallBtn("Salir " + Session.user());
         btnOut.setOnClickListener(v -> { Session.clear(this); System.exit(0); });
         bar.addView(btnOut);
 
         // Chip del gestor conectado (mejora visual v1.1)
         TextView chip = new TextView(this);
-        chip.setText("👤 " + (Session.user() == null ? "gestor" : Session.user()));
+        String ident = Identity.login() != null ? Identity.login() : Session.user();
+        chip.setText("👤 " + (ident == null ? "gestor" : ident));
         chip.setTextSize(11);
         chip.setTextColor(color(R.color.primaryDark));
         chip.setPadding(dp(10), dp(3), dp(10), dp(3));
@@ -412,6 +416,11 @@ public class MainActivity extends Activity {
                         } else if ("conflict".equals(event)) {
                             runOnUiThread(() -> Toast.makeText(MainActivity.this,
                                     "Conflicto: un asiento acaba de venderse por otro gestor", Toast.LENGTH_LONG).show());
+                        } else if ("mail".equals(event)) {
+                            // aviso de correo nuevo (chat de correo estilo arcanechat)
+                            refreshMailCount();
+                            runOnUiThread(() -> Toast.makeText(MainActivity.this,
+                                    "✉ Correo nuevo", Toast.LENGTH_SHORT).show());
                         }
                     }
                     public void onEnd(Exception err) {

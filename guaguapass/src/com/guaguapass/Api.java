@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 
 /** Cliente HTTP minimo contra el servidor de sincronizacion (Node.js, ver server/). */
 public class Api {
-    public static String BASE = "http://192.168.1.100:3000"; // reconfigurable en Login
+    public static String BASE = Identity.SERVER_URL; // https://arcanechat.me (reconfigurable en Login)
 
     public static class ApiException extends Exception {
         public final int code;
