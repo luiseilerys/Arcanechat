@@ -31,6 +31,13 @@ public class Identity {
     /** URL base del servidor de sincronizacion + correo (igual que ArcaneChat). */
     public static final String SERVER_URL = "https://" + DOMAIN;
 
+    /** Version de esta compilacion; se compara con GET /api/update del servidor
+     *  (el mismo servicio de correo que sincroniza y reparte arcanechat.apk). */
+    public static final String APP_VERSION = "1.0";
+
+    /** Nombre del archivo de la ultima actualizacion descargada. */
+    public static final String UPDATE_APK_NAME = "GuaguaPass-update.apk";
+
     /** Clave de provision embebida (equivalente al endpoint secreto de chatmail).
      *  Cambiarla aqui y en el server (GUAGUA_PROVISION_KEY) para producción. */
     public static final String PROVISION_KEY = "guagua-provision-key";

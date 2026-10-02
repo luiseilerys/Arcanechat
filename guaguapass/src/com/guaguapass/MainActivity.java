@@ -78,6 +78,8 @@ public class MainActivity extends Activity {
 
         buildUi();
         loadConfig();
+        refreshMailCount(); // badge de correo sin leer (buzon @arcanechat.me)
+        checkUpdate(false); // auto-update silencioso desde el servidor de correo
     }
 
     private void buildUi() {
@@ -103,6 +105,10 @@ public class MainActivity extends Activity {
         Button btnMail = smallBtn("✉ Correo" + (mailUnread > 0 ? " (" + mailUnread + ")" : ""));
         btnMail.setOnClickListener(v -> openMailbox());
         bar.addView(btnMail);
+        btnMailRef = btnMail;
+        Button btnUpdate = smallBtn("Actualizar");
+        btnUpdate.setOnClickListener(v -> checkUpdate(true));
+        bar.addView(btnUpdate);
         Button btnOut = smallBtn("Salir " + Session.user());
         btnOut.setOnClickListener(v -> { Session.clear(this); System.exit(0); });
         bar.addView(btnOut);
@@ -296,6 +302,152 @@ public class MainActivity extends Activity {
         b.setPadding(dp(8), 0, dp(8), 0);
         b.setMinimumHeight(dp(40));
         return b;
+    }
+
+    // ---------- Correo (buzon sincronizado @arcanechat.me) + actualizacion APK ----------
+    private int mailUnread = 0;
+    private Button btnMailRef;
+
+    /** Recuento de no leidos desde /api/mail/list (se refresca con el evento SSE "mail"). */
+    private void refreshMailCount() {
+        new Thread(() -> {
+            try {
+                String resp = Api.get("/api/mail/list");
+                final int unread = Integer.parseInt(LoginActivity.extractNum(resp, "unread"));
+                runOnUiThread(() -> {
+                    mailUnread = unread;
+                    if (btnMailRef != null)
+                        btnMailRef.setText("✉ Correo" + (unread > 0 ? " (" + unread + ")" : ""));
+                });
+            } catch (Exception e) { /* offline: sin aviso */ }
+        }).start();
+    }
+
+    /** Buzon simple: lista inbox/sent y compose contra el servidor de correo. */
+    private void openMailbox() {
+        new Thread(() -> {
+            String list = null;
+            try { list = Api.get("/api/mail/list"); } catch (Exception e) {
+                final String err = e.getMessage();
+                runOnUiThread(() -> toast("Correo no disponible: " + err));
+                return;
+            }
+            final StringBuilder sb = new StringBuilder();
+            sb.append("Buzon: ").append(Api.jstr(list, "from")).append("\n\n");
+            sb.append("── Recibidos ──\n");
+            appendMails(sb, extractArray(list, "inbox"));
+            sb.append("\n── Enviados ──\n");
+            appendMails(sb, extractArray(list, "sent"));
+            final String body = sb.toString();
+            runOnUiThread(() -> showMailDialog(body));
+        }).start();
+    }
+
+    private void appendMails(StringBuilder sb, String arr) {
+        java.util.List<String> objs = splitObjects(arr);
+        if (objs.isEmpty()) { sb.append("(vacio)\n"); return; }
+        for (int i = objs.size() - 1; i >= 0 && i >= objs.size() - 15; i--) {
+            String m = objs.get(i);
+            String from = Api.jstr(m, "from"), to = Api.jstr(m, "to");
+            String subj = Api.jstr(m, "subject"), text = Api.jstr(m, "body");
+            String ts = LoginActivity.extractNum(m, "ts");
+            String when = "?";
+            try {
+                when = new SimpleDateFormat("dd/MM HH:mm", Locale.US)
+                        .format(new Date(Long.parseLong(ts)));
+            } catch (Exception e) {}
+            sb.append(("-".equals(Api.jstr(m, "read")) ? "" : "") )
+              .append("[").append(when).append("] ")
+              .append(from == null ? to : from).append(": ").append(subj).append("\n")
+              .append(text == null ? "" : text).append("\n\n");
+        }
+    }
+
+    private void showMailDialog(String body) {
+        android.app.AlertDialog.Builder ab = new android.app.AlertDialog.Builder(this);
+        ab.setTitle("✉ Correo (" + Identity.DOMAIN + ")");
+        final EditText et = new EditText(this);
+        et.setText(body);
+        et.setTextSize(12);
+        et.setHorizontallyScrolling(false);
+        ScrollView sv = new ScrollView(this);
+        sv.addView(et);
+        ab.setView(sv);
+        ab.setPositiveButton("Redactar", (d, w) -> composeMail());
+        ab.setNeutralButton("Marcar leidos", (d, w) -> markMailRead());
+        ab.setNegativeButton("Cerrar", null);
+        ab.show();
+    }
+
+    private void composeMail() {
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(dp(20), dp(14), dp(20), 0);
+        final EditText etTo = new EditText(this); etTo.setHint("Para (gestor@arcanechat.me)");
+        final EditText etSub = new EditText(this); etSub.setHint("Asunto");
+        final EditText etBody = new EditText(this); etBody.setHint("Mensaje");
+        etBody.setMinLines(3);
+        box.addView(etTo); box.addView(etSub); box.addView(etBody);
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("Nuevo correo")
+                .setView(box)
+                .setPositiveButton("Enviar", (d, w) -> sendMail(
+                        etTo.getText().toString(), etSub.getText().toString(),
+                        etBody.getText().toString()))
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void sendMail(final String to, final String subject, final String bodyText) {
+        new Thread(() -> {
+            String err = null;
+            try {
+                String json = "{\"to\":" + LoginActivity.jq(to)
+                        + ",\"subject\":" + LoginActivity.jq(subject)
+                        + ",\"body\":" + LoginActivity.jq(bodyText) + "}";
+                Api.post("/api/mail/send", json);
+            } catch (Exception e) { err = e.getMessage(); }
+            final String er = err;
+            runOnUiThread(() -> {
+                toast(er == null ? "Correo enviado a " + to : "No envio: " + er);
+                if (er == null) refreshMailCount();
+            });
+        }).start();
+    }
+
+    private void markMailRead() {
+        new Thread(() -> {
+            try { Api.post("/api/mail/read", "{\"all\":true}"); } catch (Exception e) {}
+            runOnUiThread(this::refreshMailCount);
+        }).start();
+    }
+
+    // ---------- AUTO-ACTUALIZACION (mismo servicio de correo arcanechat.me) ----------
+
+    /** Consulta GET /api/update del servidor que compila y reparte la APK. */
+    private void checkUpdate(final boolean manual) {
+        Updater.check(this, info -> runOnUiThread(() -> {
+            if (info == null) {
+                if (manual) toast("Servidor de actualizaciones no disponible");
+                return;
+            }
+            if (!info.update) {
+                if (manual) toast("Ya estas al dia (v" + Identity.APP_VERSION + ")");
+                return;
+            }
+            toast("Nueva version v" + info.latest + ": descargando...");
+            new Thread(() -> {
+                String err = null;
+                try { Updater.downloadAndInstall(this, info); }
+                catch (Exception e) { err = e.getMessage(); }
+                final String er = err;
+                runOnUiThread(() -> {
+                    if (er != null) toast("Actualizacion falló: " + er
+                            + "\nDescargala en " + Api.BASE + "/apk/GuaguaPass.apk");
+                    else toast("Instala la descarga para actualizar a v" + info.latest);
+                });
+            }).start();
+        }));
     }
 
     // ---------- Configuracion (guaguas, rutas, posiciones) ----------

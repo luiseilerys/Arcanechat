@@ -37,6 +37,98 @@ const PROVISION_OPEN = process.env.GUAGUA_PROVISION !== '0'; // por defecto abie
 // <aleatorio>@arcanechat.me y el chat de correo usa este dominio.
 const DOMAIN = process.env.GUAGUA_DOMAIN || 'arcanechat.me';
 
+// ---------------- ACTUALIZACION DE LA APK (mismo servicio de correo) ----------------
+// Igual que ArcaneChat distribuye arcanechat.apk desde su servidor de correo,
+// aqui la APK GuaguaPass.apk vive en server/apk/ y SE REGENERA automaticamente
+// cuando cambian los fuentes de la app (src/, res/, AndroidManifest.xml).
+// La APK consulta GET /api/update?versionCode=N; si hay una compilacion nueva
+// el servidor responde el manifiesto y GET /apk/GuaguaPass.apk la descarga.
+const APK_DIR = path.join(__dirname, 'apk');
+const APK_FILE = path.join(APK_DIR, 'GuaguaPass.apk');
+const APP_SRC_DIR = path.resolve(__dirname, '..', 'src');
+const APP_RES_DIR = path.resolve(__dirname, '..', 'res');
+const APP_MANIFEST = path.resolve(__dirname, '..', 'AndroidManifest.xml');
+const BUILD_SH = path.resolve(__dirname, '..', 'build.sh');
+try { fs.mkdirSync(APK_DIR, { recursive: true }); } catch (e) {}
+
+/** Version embebida leida del AndroidManifest (versionName="1.0"). */
+function manifestVersion() {
+  const m = String(process.env.GUAGUA_APP_VERSION || '').match(/^(\d+)\.(\d+)(?:\.(\d+))?$/);
+  if (m) return [parseInt(m[1], 10), parseInt(m[2], 10), parseInt(m[3] || '0', 10)];
+  try {
+    const t = fs.readFileSync(APP_MANIFEST, 'utf8');
+    const v = (t.match(/android:versionName="(\d+)\.(\d+)(?:\.(\d+))?"/) || []).slice(1);
+    if (v[0]) return [parseInt(v[0], 10), parseInt(v[1], 10), parseInt(v[2] || '0', 10)];
+  } catch (e) {}
+  return [1, 0, 0];
+}
+function bumpVersion(built) {
+  let [a, b, c] = built;
+  if (!c) c++; else if (b < 99) b++; else { a++; b = 0; }
+  return `${a}.${b}${c ? '.' + c : ''}`;
+}
+function cmpVer(x, y) {
+  const a = String(x || '0').split('.').map(Number), b = String(y || '0').split('.').map(Number);
+  for (let i = 0; i < 3; i++) { const d = (a[i] || 0) - (b[i] || 0); if (d) return d; }
+  return 0;
+}
+/** Huella de los fuentes: cambia -> hay que recompilar la APK. */
+function walkLatest(dir) {
+  let latest = 0;
+  try {
+    for (const f of fs.readdirSync(dir)) {
+      const fp = path.join(dir, f);
+      const st = fs.statSync(fp);
+      if (st.isDirectory()) latest = Math.max(latest, walkLatest(fp));
+      else if (/\.(java|xml)$/.test(f)) latest = Math.max(latest, st.mtimeMs);
+    }
+  } catch (e) {}
+  return latest;
+}
+function srcFingerprint() {
+  return Math.round(Math.max(walkLatest(APP_SRC_DIR), walkLatest(APP_RES_DIR),
+    safeMtime(APP_MANIFEST), safeMtime(BUILD_SH)));
+}
+function safeMtime(f) { try { return fs.statSync(f).mtimeMs; } catch (e) { return 0; } }
+function readMeta() {
+  try { return JSON.parse(fs.readFileSync(path.join(APK_DIR, 'meta.json'), 'utf8')); } catch (e) { return null; }
+}
+function writeMeta(m) { try { fs.writeFileSync(path.join(APK_DIR, 'meta.json'), JSON.stringify(m)); } catch (e) {} }
+
+let building = false;
+/** Regenera la APK ejecutando build.sh (si el SDK esta disponible en el servidor). */
+function rebuildApk(force) {
+  if (building) return;
+  const fp = srcFingerprint();
+  const meta = readMeta();
+  if (!force && meta && meta.srcFp === fp && fs.existsSync(APK_FILE)) return; // ya al dia
+  if (!fs.existsSync(BUILD_SH)) return;
+  building = true;
+  const { execFile } = require('child_process');
+  execFile('/usr/bin/env', ['bash', BUILD_SH], { cwd: path.dirname(BUILD_SH), timeout: 600_000 },
+    (err) => {
+      building = false;
+      if (err) { console.log('BUILD APK fallido (SDK no disponible?): ' + String(err.message).slice(0, 120)); return; }
+      const base = manifestVersion();
+      let built = meta && meta.version ? meta.version.split('.').map(Number) : null;
+      let version = base.join('.');
+      // Si los fuentes cambiaron sin tocar versionName, se auto-incrementa el parche
+      // para que /api/update detecte la novedad (igual que los builds nocturnos de arcanechat.apk).
+      if (built && cmpVer(base.join('.'), built.join('.')) <= 0 && meta && meta.srcFp !== fp) {
+        version = bumpVersion(built);
+      }
+      let size = 0, sha = '';
+      try {
+        size = fs.statSync(APK_FILE).size;
+        sha = crypto.createHash('sha256').update(fs.readFileSync(APK_FILE)).digest('hex');
+      } catch (e) {}
+      writeMeta({ version, base: base.join('.'), size, sha, builtAt: Date.now(), srcFp: fp });
+      console.log(`APK regenerada: GuaguaPass.apk v${version} (${size} bytes)`);
+    });
+}
+setInterval(() => { try { rebuildApk(false); } catch (e) {} }, 60_000).unref();
+try { rebuildApk(false); } catch (e) {}
+
 // ---------------- Config del negocio (editala aqui) ----------------
 const CONFIG = {
   guaguas: ['GG-01 Terminal', 'GG-02 Viazo', 'GG-03 Camajuaní'],
@@ -219,11 +311,42 @@ const server = http.createServer(async (req, res) => {
 
   // ---- Config publica (incluye dominio y flags de provision para la APK) ----
   if (p === '/api/config') {
+    const meta = readMeta();
     return send(res, 200, Object.assign({}, CONFIG, {
       domain: DOMAIN,
       server: process.env.GUAGUA_SERVER || 'https://arcanechat.me',
       provision_open: PROVISION_OPEN,
+      apk_version: meta ? meta.version : null,
     }));
+  }
+
+  // ---- ACTUALIZACION DE LA APK (servida por el mismo servidor de correo) ----
+  // GET /api/update?version=1.0  -> {update, latest, url, size, sha256}
+  if (p === '/api/update' && req.method === 'GET') {
+    rebuildApk(false); // si los fuentes cambiaron, se recompila al vuelo
+    const meta = readMeta();
+    if (!meta || !fs.existsSync(APK_FILE)) return send(res, 200, { update: false, error: 'sin apk compilada' });
+    const cur = url.searchParams.get('version') || '0';
+    return send(res, 200, {
+      update: cmpVer(meta.version, cur) > 0,
+      latest: meta.version,
+      url: '/apk/GuaguaPass.apk',
+      size: meta.size,
+      sha256: meta.sha,
+      builtAt: meta.builtAt,
+    });
+  }
+
+  // Descarga directa de la APK generada (igual que arcanechat.me/.../arcanechat.apk)
+  if ((p === '/apk/GuaguaPass.apk' || p === '/download' || p === '/GuaguaPass.apk') && req.method === 'GET') {
+    if (!fs.existsSync(APK_FILE)) return send(res, 404, { error: 'apk no compilada aun' });
+    res.writeHead(200, {
+      'Content-Type': 'application/vnd.android.package-archive',
+      'Content-Length': fs.statSync(APK_FILE).size,
+      'Content-Disposition': 'attachment; filename="GuaguaPass.apk"',
+    });
+    fs.createReadStream(APK_FILE).pipe(res);
+    return;
   }
 
   // Registro manual de gestores (administracion local / curl)
