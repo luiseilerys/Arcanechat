@@ -310,6 +310,18 @@ public class Rpc {
   }
 
   /**
+   * Atomically adds all given transports to an unconfigured profile.
+   * If the profile was already configured, this fails;
+   * unlike [Self::add_transport_from_qr()] / [Self::add_or_update_transport()],
+   * which add or replace a single transport, this is meant for initial account
+   * creation (e.g. instant onboarding from a `DCACCOUNT:` QR).
+   * On failure, no transport is added at all, so the operation can be retried cleanly.
+   */
+  public void initTransports(Integer accountId, java.util.List<EnteredLoginParam> param) throws RpcException {
+    transport.call("init_transports", mapper.valueToTree(accountId), mapper.valueToTree(param));
+  }
+
+  /**
    * Returns the list of all email accounts that are used as a transport in the current profile.
    * Use [Self::add_or_update_transport()] to add or change a transport
    * and [Self::delete_transport()] to delete a transport.

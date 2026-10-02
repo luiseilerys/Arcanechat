@@ -28,6 +28,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.loader.app.LoaderManager;
 import chat.delta.rpc.Rpc;
 import chat.delta.rpc.RpcException;
+import chat.delta.rpc.types.EnteredLoginParam;
 import com.b44t.messenger.DcContext;
 import com.b44t.messenger.DcEvent;
 import com.b44t.messenger.DcLot;
@@ -550,18 +551,61 @@ public class InstantOnboardingActivity extends BaseActionBarActivity
     new Thread(
             () -> {
               Rpc rpc = DcHelper.getRpc(this);
+              String error = null;
               try {
-                rpc.addTransportFromQr(dcContext.getAccountId(), qrCode);
-                DcHelper.getEventCenter(this).endCaptureNextError();
-                progressSuccess();
-              } catch (RpcException e) {
-                DcHelper.getEventCenter(this).endCaptureNextError();
-                if (!cancelled) {
-                  Util.runOnMain(() -> progressError(e.getMessage()));
+                // Resolve the QR code right at signup time (ArcaneChat-style):
+                // a `dcaccount:<host>` pointer is expanded to the provider's
+                // account QR, then all transports are initialised atomically.
+                // Unlike add_transport_from_qr, init_transports fails cleanly on
+                // an already-configured profile and adds nothing on error,
+                // so the operation can be retried without leaving a partial state.
+                String resolvedQr = resolveProviderQr(qrCode);
+                DcLot qrParsed = dcContext.checkQr(resolvedQr);
+                if (qrParsed.getState() != DcContext.DC_QR_ACCOUNT) {
+                  error = getString(R.string.qraccount_qr_code_cannot_be_used);
+                } else {
+                  EnteredLoginParam transport = new EnteredLoginParam();
+                  transport.addr =
+                      !TextUtils.isEmpty(qrParsed.getText1()) ? qrParsed.getText1() : null;
+                  rpc.initTransports(dcContext.getAccountId(), java.util.Collections.singletonList(transport));
                 }
+              } catch (RpcException e) {
+                Log.w(TAG, "Account creation failed", e);
+                error = e.getMessage();
+              }
+              DcHelper.getEventCenter(this).endCaptureNextError();
+              final String finalError = error;
+              if (finalError != null) {
+                if (!cancelled) {
+                  Util.runOnMain(() -> progressError(finalError));
+                }
+              } else {
+                progressSuccess();
               }
             })
         .start();
+  }
+
+  /**
+   * Expands a `dcaccount:<domain>` pointer QR into the full account-provisioning
+   * QR offered by the provider (e.g. `https://<domain>/qrcode.png` decoded via
+   * check_qr), following the scheme used by ArcaneChat for instant signup.
+   * Plain QR payloads are returned unchanged.
+   */
+  private String resolveProviderQr(String qrCode) {
+    if (qrCode == null) return null;
+    if (!qrCode.toLowerCase().startsWith(DCACCOUNT + ":")) {
+      return qrCode;
+    }
+    String host = qrCode.substring((DCACCOUNT + ":").length());
+    if (host.startsWith("//")) host = host.substring(2);
+    // Try the well-known provider QR image; if it does not decode to an
+    // account QR, fall back to the raw pointer QR which core also understands.
+    String candidate = "https://" + host + "/qrcode.png";
+    if (dcContext.checkQr(candidate).getState() == DcContext.DC_QR_ACCOUNT) {
+      return candidate;
+    }
+    return qrCode;
   }
 
   private class AvatarSelectedListener implements AvatarSelector.AttachmentClickedListener {
