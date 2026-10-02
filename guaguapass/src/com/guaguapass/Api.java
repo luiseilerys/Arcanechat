@@ -61,6 +61,27 @@ public class Api {
         }
     }
 
+    /** Descarga un archivo binario (p.ej. /apk/GuaguaPass.apk) a dest. */
+    public static void download(String path, java.io.File dest) throws Exception {
+        HttpURLConnection c = (HttpURLConnection) new URL(BASE + path).openConnection();
+        try {
+            c.setConnectTimeout(10000);
+            c.setReadTimeout(60000);
+            int code = c.getResponseCode();
+            if (code >= 400) throw new ApiException(code, "descarga fallo HTTP " + code);
+            java.io.InputStream in = c.getInputStream();
+            java.io.File parent = dest.getParentFile();
+            if (parent != null) parent.mkdirs();
+            java.io.OutputStream out = new java.io.FileOutputStream(dest);
+            byte[] buf = new byte[8192];
+            int n;
+            while ((n = in.read(buf)) > 0) out.write(buf, 0, n);
+            out.flush(); out.close(); in.close();
+        } finally {
+            c.disconnect();
+        }
+    }
+
     private static String readAll(InputStream is) throws Exception {
         if (is == null) return "";
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
