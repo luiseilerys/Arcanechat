@@ -33,6 +33,9 @@ const PORT = parseInt(process.argv[2] || '3000', 10);
 const DB_FILE = path.join(__dirname, 'db.json');
 const PROVISION_KEY = process.env.GUAGUA_PROVISION_KEY || 'guagua-provision-key';
 const PROVISION_OPEN = process.env.GUAGUA_PROVISION !== '0'; // por defecto abierto (estilo chatmail)
+// Dominio de correo igual que la APK ArcaneChat: los usuarios se generan como
+// <aleatorio>@arcanechat.me y el chat de correo usa este dominio.
+const DOMAIN = process.env.GUAGUA_DOMAIN || 'arcanechat.me';
 
 // ---------------- Config del negocio (editala aqui) ----------------
 const CONFIG = {
@@ -139,13 +142,46 @@ function createUser(username, password, name, auto) {
   if (!username || !password) return { err: 'username y password requeridos' };
   if (db.users.some((u) => u.username === username)) return { err: 'usuario existe' };
   const salt = crypto.randomBytes(8).toString('hex');
+  // Buzon de correo estilo arcanechat: <local>@arcanechat.me
+  const email = username.includes('@') ? username : `${username}@${DOMAIN}`;
   const user = {
-    id: db.nextUserId++, username, name: name || username, salt,
+    id: db.nextUserId++, username, email, name: name || username, salt,
     hash: hashPass(password, salt), auto: !!auto, created: Date.now(),
+    mailbox: { inbox: [], sent: [] }, // chat de correo (mensajes internos)
   };
   db.users.push(user); persist();
   return { user };
 }
+
+// ---------------- Chat de correo (mensajeria interna estilo email) ----------------
+function findUserByNameOrEmail(s) {
+  s = String(s || '').toLowerCase();
+  return db.users.find((u) => u.username === s || u.email === s || u.email === `${s}@${DOMAIN}`);
+}
+
+function mailSend(from, to, subject, body) {
+  const dest = findUserByNameOrEmail(to);
+  if (!dest) return { err: `destinatario no encontrado: ${to}` };
+  const msg = {
+    id: db.nextMailId = (db.nextMailId || 1), from: from.email || from.username,
+    to: dest.email, subject: String(subject || '(sin asunto)').slice(0, 120),
+    body: String(body || '').slice(0, 4000), ts: Date.now(), read: false,
+  };
+  db.nextMailId++;
+  dest.mailbox.inbox.push(msg);
+  (from.mailbox || (from.mailbox = { inbox: [], sent: [] })).sent.push(msg);
+  persist();
+  notifyUser(dest.id); // push SSE para el destinatario
+  return { msg };
+}
+
+/** Empuja el evento "mail" al stream SSE del usuario si esta conectado. */
+function notifyUser(uid) {
+  const set = mailChannels.get(uid);
+  if (!set) return;
+  for (const res of set) { try { res.write('event: mail\ndata: {}\n\n'); } catch (e) {} }
+}
+const mailChannels = new Map(); // uid -> Set<res>
 
 // ---------------- API ----------------
 const server = http.createServer(async (req, res) => {
@@ -158,7 +194,11 @@ const server = http.createServer(async (req, res) => {
     const key = req.headers['x-provision-key'] || '';
     if (key !== PROVISION_KEY) return send(res, 403, { error: 'clave de provision invalida' });
     const b = await readBody(req);
-    const login = String(b.login || '').toLowerCase().replace(/[^a-z0-9._-]/g, '').slice(0, 32);
+    // Aceptamos tanto el login corto (mofaru) como la direccion completa
+    // generada por la APK (mofaru@arcanechat.me), igual que ArcaneChat.
+    let login = String(b.login || '').toLowerCase().replace(/[^a-z0-9._@-]/g, '').slice(0, 64);
+    if (login.includes('@')) login = login.split('@')[0].slice(0, 32);
+    else login = login.slice(0, 32);
     const password = String(b.password || '');
     const name = String(b.name || '').slice(0, 40);
     if (!login || password.length < 8) return send(res, 400, { error: 'login y password(>=8) requeridos' });
@@ -168,19 +208,20 @@ const server = http.createServer(async (req, res) => {
       const r = createUser(login, password, name || ('Gestor-' + login.slice(-4)), true);
       if (r.err) return send(res, 409, { error: r.err });
       u = r.user; created = true;
-      console.log(`AUTO-REGISTRO: ${login} (${created ? 'creado' : 'existia'})`);
+      console.log(`AUTO-REGISTRO: ${u.email} (${created ? 'creado' : 'existia'})`);
     } else if (hashPass(password, u.salt) !== u.hash) {
       // existe con otra clave derivada: no secuestramos cuentas ajenas
       return send(res, 409, { error: 'usuario existe con otra clave' });
     }
     const token = sign({ uid: u.id, exp: Date.now() / 1000 + 86400 * 30 });
-    return send(res, 200, { ok: true, created, token, id: u.id, username: u.username, name: u.name });
+    return send(res, 200, { ok: true, created, token, id: u.id, username: u.username, email: u.email, name: u.name });
   }
 
   // ---- Config publica (incluye dominio y flags de provision para la APK) ----
   if (p === '/api/config') {
     return send(res, 200, Object.assign({}, CONFIG, {
-      domain: process.env.GUAGUA_DOMAIN || 'guagua.local',
+      domain: DOMAIN,
+      server: process.env.GUAGUA_SERVER || 'https://arcanechat.me',
       provision_open: PROVISION_OPEN,
     }));
   }
@@ -195,10 +236,13 @@ const server = http.createServer(async (req, res) => {
 
   if (p === '/api/login' && req.method === 'POST') {
     const b = await readBody(req);
-    const u = db.users.find((x) => x.username === b.username);
+    // Acepta usuario corto (mofaru) o correo completo (mofaru@arcanechat.me)
+    let uname = String(b.username || '').toLowerCase();
+    if (uname.includes('@')) uname = uname.split('@')[0];
+    const u = db.users.find((x) => x.username === uname);
     if (!u || hashPass(String(b.password || ''), u.salt) !== u.hash) return send(res, 401, { error: 'credenciales invalidas' });
     const token = sign({ uid: u.id, exp: Date.now() / 1000 + 86400 * 30 });
-    return send(res, 200, { token, id: u.id, username: u.username, name: u.name });
+    return send(res, 200, { token, id: u.id, username: u.username, email: u.email, name: u.name });
   }
 
   // Todo lo demas requiere token
@@ -229,8 +273,42 @@ const server = http.createServer(async (req, res) => {
     if (!set) { set = new Set(); channels.set(key, set); }
     set.add(res);
     sseSend(res, 'state', statePayload(qDate, qGuagua, qHora)); // estado inicial inmediato
-    req.on('close', () => { set.delete(res); if (set.size === 0) channels.delete(key); });
+    // Canal de notificaciones de correo de este usuario (chat de correo)
+    let mset = mailChannels.get(user.id);
+    if (!mset) { mset = new Set(); mailChannels.set(user.id, mset); }
+    mset.add(res);
+    req.on('close', () => {
+      set.delete(res); if (set.size === 0) channels.delete(key);
+      mset.delete(res); if (mset.size === 0) mailChannels.delete(user.id);
+    });
     return;
+  }
+
+  // ---- CHAT DE CORREO (mensajeria interna estilo email, dominio arcanechat.me) ----
+  if (p === '/api/mail/send' && req.method === 'POST') {
+    const b = await readBody(req);
+    const r = mailSend(user, b.to, b.subject, b.body);
+    if (r.err) return send(res, 404, { error: r.err });
+    return send(res, 200, { ok: true, id: r.msg.id, to: r.msg.to });
+  }
+
+  if (p === '/api/mail/list' && req.method === 'GET') {
+    if (!user.mailbox) user.mailbox = { inbox: [], sent: [] };
+    const unread = user.mailbox.inbox.filter((m) => !m.read).length;
+    return send(res, 200, {
+      from: user.email,
+      inbox: user.mailbox.inbox.slice(-100),
+      sent: user.mailbox.sent.slice(-100),
+      unread,
+    });
+  }
+
+  if (p === '/api/mail/read' && req.method === 'POST') {
+    const b = await readBody(req);
+    if (!user.mailbox) user.mailbox = { inbox: [], sent: [] };
+    for (const m of user.mailbox.inbox) if (b.all || m.id === b.id) m.read = true;
+    persist();
+    return send(res, 200, { ok: true });
   }
 
   if (p === '/api/sale' && req.method === 'POST') {
