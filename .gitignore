@@ -1,1 +1,3 @@
-(empty)guaguas-apk-repo/
+# Gradle
+.gradle/
+build/
