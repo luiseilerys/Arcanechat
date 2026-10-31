@@ -115,6 +115,7 @@ jobs:
           key: core-arm64-v8a-${{ steps.core-hash.outputs.hash }}-${{ hashFiles('jni/Android.mk', 'jni/Application.mk', 'jni/dc_wrapper.c', 'scripts/ndk-make.sh') }}-ndk-r27
 
       - name: Compile core (native libraries)
+        id: compile-core
         if: steps.core-cache.outputs.cache-hit != 'true' && env.ABI_FILTER != 'all'
         run: |
           export ANDROID_NDK_ROOT="$ANDROID_HOME/ndk/27.0.12077973"
@@ -130,16 +131,39 @@ jobs:
           export PATH="${PATH}:${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/"
           scripts/install-toolchains.sh && scripts/ndk-make.sh
 
+      - name: Save compiled core
+        if: steps['core-cache'].outputs.cache-hit != 'true' && steps['compile-core'].outcome == 'success'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            jni/arm64-v8a
+            libs/arm64-v8a
+          key: ${{ steps['core-cache'].outputs.cache-primary-key }}
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Build APK
         run: |
+          set +e
           if [ "$ABI_FILTER" = "all" ]; then
-            ./gradlew --no-daemon assemble$FLAVOR$BUILD_TYPE
+            ./gradlew --no-daemon --stacktrace assemble$FLAVOR$BUILD_TYPE 2>&1 | tee /tmp/gradle.log
           else
-            ./gradlew --no-daemon -PABI_FILTER=$ABI_FILTER assemble$FLAVOR$BUILD_TYPE
+            ./gradlew --no-daemon --stacktrace -PABI_FILTER=$ABI_FILTER assemble$FLAVOR$BUILD_TYPE 2>&1 | tee /tmp/gradle.log
           fi
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            echo "==== resumen del fallo ===="
+            grep -E "^e: |\.java:[0-9]+: error:|error: |What went wrong|Caused by:|FAILED$" /tmp/gradle.log | head -40
+            echo "==== anotaciones ===="
+            grep -E "^e: |\.java:[0-9]+: error:|What went wrong|Caused by:|error: " /tmp/gradle.log \
+              | head -10 \
+              | while IFS= read -r line; do
+                  clean=$(printf '%s' "$line" | tr -d '%\r' | cut -c1-400)
+                  echo "::error title=Gradle build::${clean}"
+                done
+          fi
+          exit "$status"
 
       - name: Upload APK as Artifact
         uses: actions/upload-artifact@v4
