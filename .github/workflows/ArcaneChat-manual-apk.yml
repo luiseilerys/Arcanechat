@@ -4,6 +4,9 @@
 name: Build ArcaneChat APK (Manual)
 
 on:
+  push:
+    branches:
+      - arena/ddc22f4d-arcanechat
   workflow_dispatch:
     inputs:
       flavor:
@@ -33,6 +36,13 @@ on:
           - arm64-v8a
           - x86
           - x86_64
+
+# Valores por defecto: al lanzarlo por push no hay inputs, y los pasos de abajo
+# usan siempre estas variables.
+env:
+  FLAVOR: ${{ inputs.flavor || 'foss' }}
+  BUILD_TYPE: ${{ inputs.build_type || 'Debug' }}
+  ABI_FILTER: ${{ inputs.abi_filter || 'arm64-v8a' }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -95,15 +105,15 @@ jobs:
           key: core-arm64-v8a-${{ steps.core-hash.outputs.hash }}-${{ hashFiles('jni/Android.mk', 'jni/Application.mk', 'jni/dc_wrapper.c', 'scripts/ndk-make.sh') }}-ndk-r27
 
       - name: Compile core (native libraries)
-        if: steps.core-cache.outputs.cache-hit != 'true' && inputs.abi_filter != 'all'
+        if: steps.core-cache.outputs.cache-hit != 'true' && env.ABI_FILTER != 'all'
         env:
           ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
         run: |
           export PATH="${PATH}:${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/"
-          scripts/install-toolchains.sh && scripts/ndk-make.sh ${{ inputs.abi_filter }}
+          scripts/install-toolchains.sh && scripts/ndk-make.sh ${{ env.ABI_FILTER }}
 
       - name: Compile core (all ABIs)
-        if: steps.core-cache.outputs.cache-hit != 'true' && inputs.abi_filter == 'all'
+        if: steps.core-cache.outputs.cache-hit != 'true' && env.ABI_FILTER == 'all'
         env:
           ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
         run: |
@@ -115,15 +125,15 @@ jobs:
 
       - name: Build APK
         run: |
-          if [ "${{ inputs.abi_filter }}" = "all" ]; then
-            ./gradlew --no-daemon assemble${{ inputs.flavor }}${{ inputs.build_type }}
+          if [ "$ABI_FILTER" = "all" ]; then
+            ./gradlew --no-daemon assemble$FLAVOR$BUILD_TYPE
           else
-            ./gradlew --no-daemon -PABI_FILTER=${{ inputs.abi_filter }} assemble${{ inputs.flavor }}${{ inputs.build_type }}
+            ./gradlew --no-daemon -PABI_FILTER=$ABI_FILTER assemble$FLAVOR$BUILD_TYPE
           fi
 
       - name: Upload APK as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ArcaneChat-${{ inputs.flavor }}-${{ inputs.build_type }}-${{ inputs.abi_filter }}
-          path: 'build/outputs/apk/${{ inputs.flavor }}/${{ inputs.build_type }}/*.apk'
+          name: ArcaneChat-${{ env.FLAVOR }}-${{ env.BUILD_TYPE }}-${{ env.ABI_FILTER }}
+          path: 'build/outputs/apk/${{ env.FLAVOR }}/${{ env.BUILD_TYPE }}/*.apk'
           if-no-files-found: error
