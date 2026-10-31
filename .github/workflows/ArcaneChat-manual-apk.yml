@@ -140,6 +140,15 @@ jobs:
             libs/arm64-v8a
           key: ${{ steps['core-cache'].outputs.cache-primary-key }}
 
+      - name: Resolve build parameters
+        run: |
+          build_dir=$(printf '%s' "$BUILD_TYPE" | tr '[:upper:]' '[:lower:]')
+          build_cap=$(printf '%s' "$build_dir" | sed 's/^\(.\)/\U\1/')
+          flavor_cap=$(printf '%s' "$FLAVOR" | sed 's/^\(.\)/\U\1/')
+          echo "BUILD_DIR=$build_dir" >> "$GITHUB_ENV"
+          echo "GRADLE_TASK=assemble${flavor_cap}${build_cap}" >> "$GITHUB_ENV"
+          echo "building with $GRADLE_TASK into build/outputs/apk/$FLAVOR/$build_dir"
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -147,9 +156,9 @@ jobs:
         run: |
           set +e
           if [ "$ABI_FILTER" = "all" ]; then
-            ./gradlew --no-daemon --stacktrace assemble$FLAVOR$BUILD_TYPE 2>&1 | tee /tmp/gradle.log
+            ./gradlew --no-daemon --stacktrace "$GRADLE_TASK" 2>&1 | tee /tmp/gradle.log
           else
-            ./gradlew --no-daemon --stacktrace -PABI_FILTER=$ABI_FILTER assemble$FLAVOR$BUILD_TYPE 2>&1 | tee /tmp/gradle.log
+            ./gradlew --no-daemon --stacktrace -PABI_FILTER=$ABI_FILTER "$GRADLE_TASK" 2>&1 | tee /tmp/gradle.log
           fi
           status=${PIPESTATUS[0]}
           if [ "$status" -ne 0 ]; then
@@ -169,5 +178,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ArcaneChat-${{ env.FLAVOR }}-${{ env.BUILD_TYPE }}-${{ env.ABI_FILTER }}
-          path: 'build/outputs/apk/${{ env.FLAVOR }}/${{ env.BUILD_TYPE }}/*.apk'
+          path: 'build/outputs/apk/${{ env.FLAVOR }}/${{ env.BUILD_DIR }}/*.apk'
           if-no-files-found: error
