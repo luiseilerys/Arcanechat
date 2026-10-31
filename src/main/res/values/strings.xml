@@ -1179,4 +1179,31 @@
 
     <!-- device messages for updates -->
     <string name="update_2_0">What\'s new?\n\n💯 End-to-end encryption is reliable and forever now. Padlocks 🔒 are gone!\n\n✉️ Classic email without end-to-end encryption is marked with a letter symbol\n\n😻 New enhanced profile screen for all your contacts\n\n🔲 New button for quick access to apps used in a chat\n\n❤️ Please donate to help us remain independent and continue to bring improvements: %1$s</string>
+
+    <!-- community mods -->
+    <string name="mods_title">Community mods</string>
+    <string name="mods_help">Mods are small community-made packages (.acmod) that customise ArcaneChat: a colour theme, a chat background, a notification sound and/or WebXDC apps. They contain no executable code, and every file is validated before installation.</string>
+    <string name="mods_import">Install mod (.acmod)</string>
+    <string name="mods_installing">Validating mod…</string>
+    <string name="mods_installed_ok">Mod “%1$s” installed</string>
+    <string name="mods_install_failed">Could not install the mod</string>
+    <string name="mods_empty">No mods installed yet.\n\nDownload a .acmod file made by the community and install it here.</string>
+    <string name="mods_one_active">Only one mod can be active at a time. Your own settings are not lost: they are restored when you deactivate the mod.</string>
+    <string name="mods_activate">Activate</string>
+    <string name="mods_deactivate">Deactivate</string>
+    <string name="mods_delete">Delete</string>
+    <string name="mods_deleted">Mod deleted</string>
+    <string name="mods_delete_confirm">Remove “%1$s” from this device?</string>
+    <string name="mods_active">ACTIVE</string>
+    <string name="mods_activated">Mod “%1$s” activated</string>
+    <string name="mods_deactivated">Mod deactivated, your previous settings were restored</string>
+    <string name="mods_details">Details</string>
+    <string name="mods_share_app">Share app</string>
+    <string name="mods_no_webxdc">This mod has no WebXDC apps</string>
+    <string name="mods_cap_theme">theme</string>
+    <string name="mods_cap_background">chat background</string>
+    <string name="mods_cap_sound">notification sound</string>
+    <string name="mods_cap_webxdc">WebXDC apps</string>
+    <string name="mods_version_author">v%1$s · %2$s</string>
+    <string name="mods_unknown_author">unknown author</string>
 </resources>

@@ -36,6 +36,7 @@ import org.thoughtcrime.securesms.R;
 import org.thoughtcrime.securesms.StatsSending;
 import org.thoughtcrime.securesms.connect.DcEventCenter;
 import org.thoughtcrime.securesms.proxy.ProxySettingsActivity;
+import org.thoughtcrime.securesms.mods.ModsActivity;
 import org.thoughtcrime.securesms.relay.RelayListActivity;
 import org.thoughtcrime.securesms.util.Prefs;
 import org.thoughtcrime.securesms.util.ScreenLockUtil;
@@ -169,6 +170,15 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
       proxySettings.setOnPreferenceClickListener(
           (preference) -> {
             startActivity(new Intent(requireActivity(), ProxySettingsActivity.class));
+            return true;
+          });
+    }
+
+    Preference modsButton = this.findPreference("pref_mods_button");
+    if (modsButton != null) {
+      modsButton.setOnPreferenceClickListener(
+          (preference) -> {
+            startActivity(new Intent(requireActivity(), ModsActivity.class));
             return true;
           });
     }

@@ -1,0 +1,12 @@
+{
+  "format": 1,
+  "id": "org.arcanechat.comunidad.neo-verde",
+  "name": "Neo Verde",
+  "version": "1.0.0",
+  "author": "Comunidad ArcaneChat",
+  "description": "Tema verde, fondo de chat degradado y un tono de notificación suave. Mod de ejemplo para aprender el formato.",
+  "theme": "green",
+  "background": "background.png",
+  "notificationSound": "sounds/notify.wav",
+  "homepage": "https://arcanechat.me"
+}

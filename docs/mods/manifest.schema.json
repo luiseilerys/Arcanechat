@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://arcanechat.me/schemas/acmod-manifest-1.json",
+  "title": "ArcaneChat community mod manifest",
+  "description": "Manifest de un paquete .acmod (formato 1). Los mods son declarativos: no pueden contener código ejecutable.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["id"],
+  "properties": {
+    "format": {
+      "type": "integer",
+      "const": 1,
+      "default": 1,
+      "description": "Versión del formato del manifiesto."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{2,63}$",
+      "description": "Identificador único y estable del mod."
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 80,
+      "description": "Nombre visible. Si falta se usa el id."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+){0,3}([-+][0-9A-Za-z.-]{1,32})?$",
+      "description": "Versión del mod."
+    },
+    "author": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "theme": {
+      "type": "string",
+      "enum": ["light", "dark", "blue", "gray", "green", "pink", "purple", "red", "system"],
+      "description": "Tema de color integrado que se aplica al activar el mod."
+    },
+    "background": {
+      "type": "string",
+      "pattern": "^(?!/)(?!.*\\.\\.)(?!.*\\\\)[^\\u0000-\\u001f:*?\"<>|]{1,200}$",
+      "description": "Ruta relativa (dentro del paquete) de la imagen de fondo de chat."
+    },
+    "notificationSound": {
+      "type": "string",
+      "pattern": "^(?!/)(?!.*\\.\\.)(?!.*\\\\)[^\\u0000-\\u001f:*?\"<>|]{1,200}$",
+      "description": "Ruta relativa (dentro del paquete) del sonido de notificación."
+    },
+    "webxdc": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {
+        "type": "string",
+        "pattern": "^(?!/)(?!.*\\.\\.)(?!.*\\\\)[^\\u0000-\\u001f:*?\"<>|]{1,200}$"
+      },
+      "description": "Apps WebXDC (.xdc) que el mod distribuye."
+    },
+    "homepage": {
+      "type": "string",
+      "pattern": "^https://",
+      "maxLength": 200
+    }
+  },
+  "anyOf": [
+    { "required": ["theme"] },
+    { "required": ["background"] },
+    { "required": ["notificationSound"] },
+    { "required": ["webxdc"], "properties": { "webxdc": { "minItems": 1 } } }
+  ]
+}

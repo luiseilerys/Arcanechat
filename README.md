@@ -26,6 +26,19 @@ This app has some extended support for WebXDC apps:
 - Inside apps, clicking external links is supported, ex. to open in browser, so you can include links to your website or donation pages.
 - `manifest.toml` field: `orientation`, if you set it to `"landscape"` your app will be launched in landscape mode.
 
+# Community mods
+
+ArcaneChat can be customised with declarative mods made by the community (`.acmod` packages):
+colour themes, chat backgrounds, notification sounds and bundled WebXDC apps. Mods cannot contain
+executable code and are validated on-device before installation.
+
+```bash
+./scripts/empaquetar-mod.sh mods/ejemplo-neo-verde   # empaqueta y valida
+```
+
+Install them from **Settings → Advanced → Community mods**. See [docs/mods](docs/mods/README.md)
+for the format, the security rules and the example mods.
+
 # Credits
 
 This app is based on the [official Delta Chat client](https://github.com/deltachat/deltachat-android) with several improvements.

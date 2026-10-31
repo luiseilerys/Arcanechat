@@ -9,6 +9,10 @@
     <PreferenceCategory android:title="@string/pref_server">
 
         <Preference
+            android:key="pref_mods_button"
+            android:title="@string/mods_title" />
+
+        <Preference
             android:key="pref_relay_list_button"
             android:title="@string/transports" />
 

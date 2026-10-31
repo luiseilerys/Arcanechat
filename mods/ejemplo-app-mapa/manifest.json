@@ -1,0 +1,9 @@
+{
+  "format": 1,
+  "id": "org.arcanechat.comunidad.mapa",
+  "name": "Mapa para el chat",
+  "version": "1.0.0",
+  "author": "Comunidad ArcaneChat",
+  "description": "Empaqueta la app WebXDC de mapas para compartirla en cualquier chat con un toque.",
+  "webxdc": ["apps/mapa.xdc"]
+}

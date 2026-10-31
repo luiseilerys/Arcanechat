@@ -4,6 +4,11 @@
         name="cache"
         path="." />
 
+    <!-- community mods: lets the app share the bundled .xdc apps with a chat -->
+    <files-path
+        name="mods"
+        path="mods/" />
+
     <external-cache-path
         name="external_cache"
         path="." />

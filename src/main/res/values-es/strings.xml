@@ -1196,4 +1196,31 @@
 
     <!-- device messages for updates -->
     <string name="update_2_0">¿Qué hay de nuevo?\n\n💯 El cifrado de extremo a extremo es fiable y para siempre. ¡Se acabaron los candados 🔒!\n\n✉️ El correo electrónico clásico sin cifrado de extremo a extremo es marcado con un símbolo de carta.\n\n😻 Nueva pantalla de perfil mejorada para todos tus contactos.\n\n🔲 Nuevo botón para acceder rápidamente a las apps usadas en el chat.\n\n❤️ Dona para ayudarnos a mantener nuestra independencia y seguir mejorando: %1$s</string>
+
+    <!-- community mods -->
+    <string name="mods_title">Mods de la comunidad</string>
+    <string name="mods_help">Los mods son paquetes pequeños hechos por la comunidad (.acmod) que personalizan ArcaneChat: un tema de color, un fondo de chat, un sonido de notificación y/o apps WebXDC. No contienen código ejecutable y todos los archivos se validan antes de instalarse.</string>
+    <string name="mods_import">Instalar mod (.acmod)</string>
+    <string name="mods_installing">Validando mod…</string>
+    <string name="mods_installed_ok">Mod «%1$s» instalado</string>
+    <string name="mods_install_failed">No se pudo instalar el mod</string>
+    <string name="mods_empty">Todavía no hay mods instalados.\n\nDescarga un archivo .acmod hecho por la comunidad e instálalo aquí.</string>
+    <string name="mods_one_active">Solo puede haber un mod activo a la vez. Tus ajustes no se pierden: se restauran cuando desactivas el mod.</string>
+    <string name="mods_activate">Activar</string>
+    <string name="mods_deactivate">Desactivar</string>
+    <string name="mods_delete">Eliminar</string>
+    <string name="mods_deleted">Mod eliminado</string>
+    <string name="mods_delete_confirm">¿Eliminar «%1$s» de este dispositivo?</string>
+    <string name="mods_active">ACTIVO</string>
+    <string name="mods_activated">Mod «%1$s» activado</string>
+    <string name="mods_deactivated">Mod desactivado, se restauraron tus ajustes anteriores</string>
+    <string name="mods_details">Detalles</string>
+    <string name="mods_share_app">Compartir app</string>
+    <string name="mods_no_webxdc">Este mod no trae apps WebXDC</string>
+    <string name="mods_cap_theme">tema</string>
+    <string name="mods_cap_background">fondo de chat</string>
+    <string name="mods_cap_sound">sonido de notificación</string>
+    <string name="mods_cap_webxdc">apps WebXDC</string>
+    <string name="mods_version_author">v%1$s · %2$s</string>
+    <string name="mods_unknown_author">autor desconocido</string>
 </resources>
