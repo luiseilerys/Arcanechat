@@ -77,14 +77,24 @@ jobs:
       - name: Validate Gradle Wrapper
         uses: gradle/actions/wrapper-validation@v4
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Set up NDK r27
-        uses: nttld/setup-ndk@v1
-        id: setup-ndk
-        with:
-          ndk-version: r27
+      # El runner ya trae ANDROID_HOME; instalamos los componentes exactos que pide
+      # build.gradle (compileSdk 36 y ndkVersion 27.0.12077973) con sdkmanager.
+      - name: Set up Android SDK and NDK r27
+        run: |
+          set -euo pipefail
+          SDK_ROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
+          SDKMANAGER="$(command -v sdkmanager || true)"
+          if [ -z "$SDKMANAGER" ]; then
+            SDKMANAGER="$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          fi
+          "$SDKMANAGER" --version
+          yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
+          "$SDKMANAGER" --install "platform-tools" "platforms;android-36" \
+            "build-tools;36.0.0" "ndk;27.0.12077973"
+          test -d "$SDK_ROOT/platforms/android-36"
+          test -d "$SDK_ROOT/ndk/27.0.12077973"
 
       - name: Rust cache for deltachat-core-rust
         uses: Swatinem/rust-cache@v2
@@ -106,17 +116,17 @@ jobs:
 
       - name: Compile core (native libraries)
         if: steps.core-cache.outputs.cache-hit != 'true' && env.ABI_FILTER != 'all'
-        env:
-          ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
         run: |
+          export ANDROID_NDK_ROOT="$ANDROID_HOME/ndk/27.0.12077973"
+          export ANDROID_NDK_HOME="$ANDROID_NDK_ROOT"
           export PATH="${PATH}:${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/"
-          scripts/install-toolchains.sh && scripts/ndk-make.sh ${{ env.ABI_FILTER }}
+          scripts/install-toolchains.sh && scripts/ndk-make.sh $ABI_FILTER
 
       - name: Compile core (all ABIs)
         if: steps.core-cache.outputs.cache-hit != 'true' && env.ABI_FILTER == 'all'
-        env:
-          ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
         run: |
+          export ANDROID_NDK_ROOT="$ANDROID_HOME/ndk/27.0.12077973"
+          export ANDROID_NDK_HOME="$ANDROID_NDK_ROOT"
           export PATH="${PATH}:${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/"
           scripts/install-toolchains.sh && scripts/ndk-make.sh
 
