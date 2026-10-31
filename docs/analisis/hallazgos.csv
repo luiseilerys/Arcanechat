@@ -1,0 +1,57 @@
+id,area,severidad,titulo,evidencia,impacto,recomendacion
+S-01,ArcaneChat,Media,Puente JS de WebXDC sin validar origen,"WebxdcActivity.java:242-254,391-446",Un origen remoto puede usar sendToChat/sendStatusUpdate/tts si internet_access=true,Validar host en interceptRequest y en shouldOverrideUrlLoading
+S-02,ArcaneChat,Media,Credenciales TURN/ICE en logcat,calls/CallService.java:110-113,Fuga de credenciales de relay de llamadas,No registrar el JSON de ICE servers; loguear solo recuento/tipos
+S-03,ArcaneChat,Alta,Transporte RPC sin timeout ni recuperacion,chat/delta/rpc/BaseRpcTransport.java:47-95,Hilo lector muerto deja todas las RPC colgadas; bucle CPU si respuesta no-JSON,"catch Throwable, completar futures, get(timeout), daemon, backoff"
+S-04,ArcaneChat,Positivo,WebView de mensajes HTML correctamente endurecido,FullMsgActivity.java:67-70,N/A,Mantener
+S-05,ArcaneChat,Media,dcaccount: externo provoca fetch a host arbitrario,InstantOnboardingActivity.java:595-608; AndroidManifest.xml:368-380,Fuga de IP/tracking y configuracion desde QR remoto no verificado,Validar host/allowlist y confirmar con el usuario; ejecutar en background con timeout
+S-06,ArcaneChat,Alta,Crash handler envia logcat completo a correo fijo,ApplicationContext.java:160-186,Exfiltracion de datos de la app sin consentimiento claro; finalize() inutil,Mostrar/redactar antes de compartir; quitar correo fijo y finalize()
+S-07,ArcaneChat,Alta,Posible deadlock de inicializacion,"ApplicationContext.java:78-84,296-301","Si init lanza Error, todo hilo que use el core se bloquea (ANR permanente)",catch Throwable + notifyAll + estado de fallo + timeout
+S-08,ArcaneChat,Media,Estado global DcHelper.sharedFiles,"DcHelper.java:253,300; AttachmentsContentProvider.java:45-51,93-102","HashMap sin sincronizar, clave por nombre, nunca se limpia; acceso cruzado entre cuentas",ConcurrentHashMap con clave cuenta/blob + TTL + canonicalPath
+S-09,ArcaneChat,Baja,Componentes exportados sin permiso,AndroidManifest.xml:545-560,BootReceiver y PanicResponderListener invocables por cualquier app (hoy no-op),exported=false y/o permiso de firma
+S-10,ArcaneChat,Baja,FileProvider con root-path /storage/,src/main/res/xml/file_provider_paths.xml,Superficie innecesaria de exposicion de ficheros,Eliminar root-path; limitar a cache/external-files
+S-11,ArcaneChat,Baja,Instalacion de APKs desde chats,AndroidManifest.xml:67; DcHelper.java:378-390,Vector de phishing (contacto envia APK),Dialogo explicito antes de ir a Ajustes/instalador
+S-12,ArcaneChat,Baja,Notificaciones muestran contenido por defecto,Prefs.java:123-126,Remitente y mensaje visibles en pantalla bloqueada,Default 'contact' y onboarding explicito
+S-13,ArcaneChat,Baja,google-services.json versionado,google-services.json,API key Firebase publica; configuracion de terceros en el repo,Rotar/restringir key; documentar origen
+S-14,ArcaneChat,Informativo,WebXDC con DatabaseEnabled y DomStorage,WebxdcActivity.java:249-250,Datos persistentes por app webxdc,Documentar; el GC no limpia el almacenamiento WebView
+B-01,ArcaneChat,Media,AttachmentsContentProvider asume >=2 segmentos,"AttachmentsContentProvider.java:62-65,113-116",IndexOutOfBounds con URI malformada,Validar segments.size() y devolver null/403
+B-02,ArcaneChat,Media,Ids de blob por System.currentTimeMillis,"PersistentBlobProvider.java:81,139,161",Colision y sobrescritura en el mismo ms,AtomicLong/UUID
+B-03,ArcaneChat,Baja,URI sintetica que no es ContentProvider real,PersistentBlobProvider.java:29-31,Terceros no pueden leer la URI compartida,Renombrar/documentar; usar FileProvider para compartir
+B-04,ArcaneChat,Media,getBlobdirFile desambigua con timestamp,DcHelper.java:407-441,Colision de rutas en el mismo ms,Contador atomico + comprobacion de existencia
+B-05,ArcaneChat,Media,DcEventCenter sin orden ni filtro de cuenta,DcEventCenter.java:96-130,UI inconsistente al cambiar de cuenta; fugas de observadores,Filtrar por accountId; limpiar observadores; snapshot de lista
+B-06,ArcaneChat,Baja,Llamada a finalize() en crash handler,ApplicationContext.java:180,Codigo muerto/deprecado,Eliminar
+B-07,ArcaneChat,Baja,Thread.sleep en waitForEnoughIce,webrtc/WebRTCClient.java:561,Bloqueo de hilo de senalizacion,Usar handler postDelayed o ScheduledExecutor
+B-08,ArcaneChat,Baja,Util.sleep ignora interrupcion,util/Util.java:347-352,Pierde senal de cancelacion,Restaurar flag de interrupcion
+B-09,ArcaneChat,Baja,137 catch genericos y 69 printStackTrace,src/main/java/**,Diagnostico pobre de errores,Log.e con contexto y tipos especificos
+B-10,ArcaneChat,Baja,Textos de UI hardcodeados,WebxdcActivity.java:212; LogViewFragment; addToHomeScreen,No traducibles,Mover a strings.xml
+B-11,ArcaneChat,Baja,God classes de UI,"ConversationActivity (1929), ConversationFragment (1201), ConversationItem (1077)",Mantenimiento y testeo dificiles,Extraer controladores
+B-12,ArcaneChat,Baja,EXTRA_EMAIL crea contacto sin validar,ShareActivity.java:249-263,Contacto inyectado via mailto malicioso,Validar formato y limitar destinatarios
+B-13,ArcaneChat,Baja,Copia vendored de Guava,util/guava/* (894 lineas),Deuda tecnica,Sustituir por APIs Java 8
+B-14,ArcaneChat,Baja,lint abortOnError false,build.gradle:213,Errores de Lint no bloquean el build,Activar y fijar baseline
+B-15,ArcaneChat,Baja,Release sin shrinkResources y sin verificacion de ProGuard,build.gradle:146-156,APK mas grande; riesgo de romper JNI/RPC,Activar shrinkResources; smoke tests de release
+B-16,ArcaneChat,Media,Workflow build-apk.yml roto,build-apk.yml:29-36,CI falla en cada push/PR,"checkout con submodulos, ndk-make, ruta build/outputs correcta"
+G-01,GuaguaPass,Critica,Keystore y contrasena versionados,guaguapass/out/guagua.keystore; build.sh:39-46; out/*.apk,Cualquiera puede firmar actualizaciones aceptadas por Android,"Rotar clave, purgar historial, .gitignore, firma en CI con secrets"
+G-02,GuaguaPass,Critica,Auto-actualizacion sin verificacion real,Updater.java:55-75; Api.java:64-83; server.js:330-337,Instalacion de APK no verificado; ademas FileUriExposedException con targetSdk 34,FileProvider + verificacion de firma del APK + URL HTTPS fija
+G-03,GuaguaPass,Alta,Clave de provision embebida y auto-registro abierto,"Identity.java:43; server.js:34-35,105-108",Cualquiera crea cuentas en el servidor,Provision cerrada por defecto; clave por despliegue; rate-limit/PoW
+G-04,GuaguaPass,Alta,/api/user sin autenticacion,server.js:353-358,Creacion de gestores arbitrarios (incluso con clave de 1 caracter),Proteger con admin token; politica de contrasenas
+G-05,GuaguaPass,Alta,JWT y login debiles,"server.js:154-170,360-369","Secret efimero, comparacion no constante, sin revocacion, sin rate-limit","Secret persistente, timingSafeEqual, jti, limites y bloqueo"
+G-06,GuaguaPass,Alta,Datos personales expuestos a cualquier gestor,server.js:202-213,"Nombre, telefono, destino y precio de todas las ventas",Minimizar payload; datos sensibles solo al dueno/supervisor
+G-07,GuaguaPass,Alta,readBody cuelga peticiones >1MB,server.js:173-179,DoS trivial,Responder 413 y rechazar
+G-08,GuaguaPass,Alta,Servidor sin TLS e imprime la clave,server.js:475-479,Credenciales y datos en claro; fuga de clave en logs,TLS obligatorio; no loguear secretos
+G-09,GuaguaPass,Media,Auto-rebuild de APK en el servidor,"server.js:98-130,325-338",Ejecucion de bash en el host; acoplamiento a SDK,Mover build a CI; servir artefacto estatico
+G-10,GuaguaPass,Media,Persistencia no atomica y bumpVersion incorrecto,"server.js:65-69,141-147",Perdida total de datos si db.json se corrompe; versiones raras,write tmp + rename; backup; semver correcto
+G-11,GuaguaPass,Media,Identidad de baja entropia y secretos en claro,Identity.java:61-77,Espacio de login ~20 bits; regeneracion pierde cuenta; prefs en claro,Mas entropia; EncryptedSharedPreferences; no regenerar
+G-12,GuaguaPass,Media,Servidor por defecto arcanechat.me,Identity.java:32; Api.java:14,Primer arranque falla; posible envio de credenciales a tercero; riesgo de marca,Default vacio/configurable; validar https
+G-13,GuaguaPass,Media,Estado SSE falso y parada no efectiva,MainActivity.java:556-590,Indicador 'en vivo' falso; hilos acumulados hasta 30s,sseAlive solo al primer evento; interrumpir el hilo
+G-14,GuaguaPass,Media,Venta rapida rota (seat=-1),MainActivity.java:115-127; SaleActivity.java:37; server.js:440,400 asiento invalido,Pedir asiento o crear endpoint de venta rapida
+G-15,GuaguaPass,Media,Inserccion de vista en indice incorrecto,SaleActivity.java:87-93,Formulario offline descolocado,addView con LayoutParams correctos
+G-16,GuaguaPass,Baja,Parser JSON artesanal,Api.java:147-163; Updater.java:44-52,Se rompe con unicode/escapes/cambios de formato,Usar org.json
+G-17,GuaguaPass,Baja,Hilos sin ciclo de vida,Api.java:102-144; MainActivity.java:559,Callbacks sobre actividad destruida,Executors + cancelacion en onDestroy
+G-18,GuaguaPass,Baja,Sin networkSecurityConfig,AndroidManifest.xml,http:// falla sin explicacion,Config de red explicita
+G-19,GuaguaPass,Baja,Correo sin limites y enumeracion,server.js:411-435,Spam y enumeracion de usuarios,Limites de envio; no revelar existencia
+G-20,GuaguaPass,Baja,Script make_icon.js no usado,guaguapass/tools/make_icon.js,Codigo muerto,Eliminar o integrar
+C-01,CI,Media,build-apk.yml roto,build-apk.yml:29-36,Build/upload falla,Corregir segun ArcaneChat-manual-apk.yml
+C-02,CI,Baja,Keystore temporal no se limpia,release.yml:51-58,Riesgo bajo en runner efimero,Limpiar en always()
+C-03,CI,Baja,::set-output deprecado y sin validar version,release.yml:12-22,Publicacion con tag incorrecto,Usar GITHUB_OUTPUT y validar versionName
+C-04,CI,Baja,cache-core no se dispara por cambios de submodulo,cache-core.yml:4-10,Cache sin invalidar,Disparar por schedule o workflow_call
+C-05,CI,Media,Artefacto de GuaguaPass firmado con clave publica,GuaguaPass-manual-apk.yml; build.sh,Indistinguible de un APK malicioso,Firma con secrets de CI
+C-06,CI,Baja,Sin lint/tests/CodeQL en CI,workflows/*,Calidad y seguridad no verificadas,"Anadir lint, tests y CodeQL/Semgrep"

@@ -1,0 +1,447 @@
+archivo,lineas,paquete,capa,descripcion_capa
+src/main/java/org/thoughtcrime/securesms/ConversationActivity.java,1929,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/calls/CallCoordinator.java,1604,org.thoughtcrime.securesms.calls,UI/llamadas,"Llamadas WebRTC, coordinación Telecom, servicio en primer plano"
+src/main/java/chat/delta/rpc/Rpc.java,1587,chat.delta.rpc,RPC,Cliente JSON-RPC generado + transporte
+src/main/java/com/codewaves/stickyheadergrid/StickyHeaderGridLayoutManager.java,1380,com.codewaves.stickyheadergrid,Vendor,Grid con cabeceras fijas (código de terceros)
+src/main/java/org/thoughtcrime/securesms/ConversationFragment.java,1201,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/ConversationItem.java,1077,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/webrtc/WebRTCClient.java,1042,org.thoughtcrime.securesms.webrtc,Núcleo de medios,"Cliente WebRTC: PeerConnection, ICE/STUN/TURN, data channel de señalización"
+src/main/java/org/thoughtcrime/securesms/calls/CallActivity.java,1030,org.thoughtcrime.securesms.calls,UI/llamadas,"Llamadas WebRTC, coordinación Telecom, servicio en primer plano"
+src/main/java/org/thoughtcrime/securesms/notifications/NotificationCenter.java,967,org.thoughtcrime.securesms.notifications,Notificaciones,"NotificationCenter, receivers de respuesta/marcar leído"
+guaguapass/src/com/guaguapass/MainActivity.java,899,com.guaguapass,GuaguaPass,"App auxiliar (build.sh, sin Gradle)"
+src/main/java/org/thoughtcrime/securesms/imageeditor/model/EditorModel.java,849,org.thoughtcrime.securesms.imageeditor.model,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/mms/AttachmentManager.java,803,org.thoughtcrime.securesms.mms,Adjuntos,"AttachmentManager, Slide/MediaType, tamaños"
+src/main/java/org/thoughtcrime/securesms/ConversationListActivity.java,761,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/MediaPreviewActivity.java,750,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/WebxdcActivity.java,741,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/video/recode/VideoRecoder.java,701,org.thoughtcrime.securesms.video.recode,Vídeo,Recodificación MP4 y reproducción
+src/main/java/org/thoughtcrime/securesms/InstantOnboardingActivity.java,638,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/connect/DcHelper.java,594,org.thoughtcrime.securesms.connect,Puente con core,"DcHelper, DcEventCenter, AccountManager, providers, workers"
+src/main/java/com/codewaves/stickyheadergrid/StickyHeaderGridAdapter.java,593,com.codewaves.stickyheadergrid,Vendor,Grid con cabeceras fijas (código de terceros)
+src/main/java/org/thoughtcrime/securesms/util/ViewUtil.java,591,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/relay/EditRelayActivity.java,545,org.thoughtcrime.securesms.relay,Relay,Alta/edición de relays (transportes)
+src/main/java/org/thoughtcrime/securesms/calls/CallService.java,538,org.thoughtcrime.securesms.calls,UI/llamadas,"Llamadas WebRTC, coordinación Telecom, servicio en primer plano"
+src/main/java/org/thoughtcrime/securesms/BaseConversationListFragment.java,513,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/imageeditor/ImageEditorView.java,488,org.thoughtcrime.securesms.imageeditor,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/ConversationAdapter.java,483,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/ProfileActivity.java,480,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/components/InputPanel.java,480,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/calls/CallViewModel.java,474,org.thoughtcrime.securesms.calls,UI/llamadas,"Llamadas WebRTC, coordinación Telecom, servicio en primer plano"
+src/main/java/org/thoughtcrime/securesms/GroupCreateActivity.java,469,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/ProfileAdapter.java,454,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/qr/QrCodeHandler.java,453,org.thoughtcrime.securesms.qr,QR/altas,"Escaneo, deep links, securejoin, backup QR, relays"
+src/main/java/org/thoughtcrime/securesms/ApplicationContext.java,447,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/video/recode/MP4Builder.java,437,org.thoughtcrime.securesms.video.recode,Vídeo,Recodificación MP4 y reproducción
+src/main/java/chat/delta/rpc/types/EventType.java,424,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/org/thoughtcrime/securesms/util/Util.java,417,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/permissions/Permissions.java,415,org.thoughtcrime.securesms.permissions,Permisos,Gestión de permisos runtime
+src/main/java/com/b44t/messenger/DcContext.java,414,com.b44t.messenger,Bindings JNI,DcContext/DcMsg/DcChat/... sobre deltachat-core
+src/main/java/org/thoughtcrime/securesms/util/SaveAttachmentTask.java,409,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/WelcomeActivity.java,405,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/util/guava/Preconditions.java,399,org.thoughtcrime.securesms.util.guava,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/imageeditor/renderers/MultiLineTextRenderer.java,394,org.thoughtcrime.securesms.imageeditor.renderers,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/ContactSelectionListFragment.java,393,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/util/Prefs.java,373,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/ConversationListFragment.java,368,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/components/audioplay/AudioView.java,367,org.thoughtcrime.securesms.components.audioplay,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/scribbles/ImageEditorFragment.java,367,org.thoughtcrime.securesms.scribbles,Editor de imagen,Fragmentos y stickers
+src/main/java/org/thoughtcrime/securesms/imageeditor/model/EditorElement.java,362,org.thoughtcrime.securesms.imageeditor.model,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/ProfileFragment.java,360,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/WebViewActivity.java,359,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/ConversationListItem.java,354,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/contacts/ContactSelectionListAdapter.java,349,org.thoughtcrime.securesms.contacts,Contactos,Selección y avatares
+src/main/java/org/thoughtcrime/securesms/imageeditor/model/EditorElementHierarchy.java,341,org.thoughtcrime.securesms.imageeditor.model,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/components/ThumbnailView.java,334,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/components/KeyboardAwareLinearLayout.java,332,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/scribbles/UriGlideRenderer.java,332,org.thoughtcrime.securesms.scribbles,Editor de imagen,Fragmentos y stickers
+src/main/java/com/b44t/messenger/DcMsg.java,329,com.b44t.messenger,Bindings JNI,DcContext/DcMsg/DcChat/... sobre deltachat-core
+src/main/java/org/thoughtcrime/securesms/ShareActivity.java,329,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/ApplicationPreferencesActivity.java,326,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/providers/PersistentBlobProvider.java,324,org.thoughtcrime.securesms.providers,ContentProviders,"Blob providers, FileProvider util"
+src/main/java/org/thoughtcrime/securesms/service/GenericForegroundService.java,321,org.thoughtcrime.securesms.service,Servicios,"Servicios en primer plano, receivers, audio"
+src/main/java/org/thoughtcrime/securesms/components/audioplay/AudioPlaybackViewModel.java,318,org.thoughtcrime.securesms.components.audioplay,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/recipients/Recipient.java,317,org.thoughtcrime.securesms.recipients,Destinatarios,Modelo de destinatario
+src/main/java/org/thoughtcrime/securesms/util/MediaUtil.java,309,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/scribbles/ImageEditorHud.java,307,org.thoughtcrime.securesms.scribbles,Editor de imagen,Fragmentos y stickers
+src/main/java/org/thoughtcrime/securesms/LogViewFragment.java,304,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/database/loaders/BucketedThreadMediaLoader.java,304,org.thoughtcrime.securesms.database.loaders,BD local,Loaders y modelos auxiliares
+src/main/java/org/thoughtcrime/securesms/components/AttachmentTypeSelector.java,296,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/CreateProfileActivity.java,294,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/components/QuoteView.java,294,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/AllMediaDocumentsFragment.java,292,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/relay/RelayListActivity.java,291,org.thoughtcrime.securesms.relay,Relay,Alta/edición de relays (transportes)
+src/main/java/org/thoughtcrime/securesms/components/MicrophoneRecorderView.java,290,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/preferences/AdvancedPreferenceFragment.java,290,org.thoughtcrime.securesms.preferences,Ajustes,Pantallas de preferencias
+src/main/java/org/thoughtcrime/securesms/accounts/AccountSelectionListFragment.java,285,org.thoughtcrime.securesms.accounts,Cuentas,Selector de cuentas
+src/main/java/org/thoughtcrime/securesms/preferences/NotificationsPreferenceFragment.java,282,org.thoughtcrime.securesms.preferences,Ajustes,Pantallas de preferencias
+src/main/java/org/thoughtcrime/securesms/audio/AudioCodec.java,281,org.thoughtcrime.securesms.audio,Audio,Grabación/reproducción
+src/main/java/org/thoughtcrime/securesms/search/SearchListAdapter.java,279,org.thoughtcrime.securesms.search,Búsqueda,Búsqueda de mensajes
+src/main/java/org/thoughtcrime/securesms/qr/QrActivity.java,274,org.thoughtcrime.securesms.qr,QR/altas,"Escaneo, deep links, securejoin, backup QR, relays"
+src/main/java/org/thoughtcrime/securesms/AllMediaGalleryFragment.java,271,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/FullMsgActivity.java,265,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/qr/BackupTransferActivity.java,261,org.thoughtcrime.securesms.qr,QR/altas,"Escaneo, deep links, securejoin, backup QR, relays"
+src/main/java/chat/delta/rpc/types/Qr.java,260,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/org/thoughtcrime/securesms/util/BitmapUtil.java,260,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/connect/DcEventCenter.java,255,org.thoughtcrime.securesms.connect,Puente con core,"DcHelper, DcEventCenter, AccountManager, providers, workers"
+src/main/java/org/thoughtcrime/securesms/video/recode/Track.java,255,org.thoughtcrime.securesms.video.recode,Vídeo,Recodificación MP4 y reproducción
+src/main/java/org/thoughtcrime/securesms/AllMediaActivity.java,254,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+guaguapass/src/com/guaguapass/LoginActivity.java,254,com.guaguapass,GuaguaPass,"App auxiliar (build.sh, sin Gradle)"
+src/main/java/org/thoughtcrime/securesms/scribbles/widget/VerticalSlideColorPicker.java,248,org.thoughtcrime.securesms.scribbles.widget,Editor de imagen,Fragmentos y stickers
+src/main/java/org/thoughtcrime/securesms/search/SearchFragment.java,244,org.thoughtcrime.securesms.search,Búsqueda,Búsqueda de mensajes
+src/main/java/org/thoughtcrime/securesms/proxy/ProxySettingsActivity.java,241,org.thoughtcrime.securesms.proxy,Proxy,Configuración SOCKS5/HTTP
+src/main/java/org/thoughtcrime/securesms/database/CursorRecyclerViewAdapter.java,237,org.thoughtcrime.securesms.database,BD local,Loaders y modelos auxiliares
+src/main/java/org/thoughtcrime/securesms/qr/QrShowFragment.java,237,org.thoughtcrime.securesms.qr,QR/altas,"Escaneo, deep links, securejoin, backup QR, relays"
+src/main/java/org/thoughtcrime/securesms/util/SendRelayedMessageUtil.java,236,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/util/ShareUtil.java,235,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/video/recode/TextureRenderer.java,231,org.thoughtcrime.securesms.video.recode,Vídeo,Recodificación MP4 y reproducción
+src/main/java/org/thoughtcrime/securesms/util/StickyHeaderDecoration.java,226,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/imageeditor/renderers/AutomaticControlPointBezierLine.java,224,org.thoughtcrime.securesms.imageeditor.renderers,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/qr/RegistrationQrActivity.java,222,org.thoughtcrime.securesms.qr,QR/altas,"Escaneo, deep links, securejoin, backup QR, relays"
+src/main/java/org/thoughtcrime/securesms/preferences/ListSummaryPreferenceFragment.java,217,org.thoughtcrime.securesms.preferences,Ajustes,Pantallas de preferencias
+src/main/java/org/thoughtcrime/securesms/util/guava/Optional.java,216,org.thoughtcrime.securesms.util.guava,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/ConversationItemSwipeCallback.java,215,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/calls/MediaStreamManager.java,215,org.thoughtcrime.securesms.calls,UI/llamadas,"Llamadas WebRTC, coordinación Telecom, servicio en primer plano"
+src/main/java/org/thoughtcrime/securesms/crypto/KeyStoreHelper.java,215,org.thoughtcrime.securesms.crypto,Cripto local,Secreto de BD con Android Keystore
+src/main/java/org/thoughtcrime/securesms/qr/BackupProviderFragment.java,213,org.thoughtcrime.securesms.qr,QR/altas,"Escaneo, deep links, securejoin, backup QR, relays"
+src/main/java/org/thoughtcrime/securesms/components/ConversationItemThumbnail.java,211,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/components/ComposeText.java,210,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/preferences/ChatBackgroundActivity.java,204,org.thoughtcrime.securesms.preferences,Ajustes,Pantallas de preferencias
+src/main/java/org/thoughtcrime/securesms/AllMediaDocumentsAdapter.java,203,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/video/recode/OutputSurface.java,203,org.thoughtcrime.securesms.video.recode,Vídeo,Recodificación MP4 y reproducción
+src/main/java/org/thoughtcrime/securesms/MessageSelectorFragment.java,200,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/preferences/PrivacyPreferenceFragment.java,197,org.thoughtcrime.securesms.preferences,Ajustes,Pantallas de preferencias
+src/main/java/org/thoughtcrime/securesms/reactions/AddReactionView.java,195,org.thoughtcrime.securesms.reactions,Reacciones,Reacciones a mensajes
+src/main/java/org/thoughtcrime/securesms/ConversationListAdapter.java,193,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/preferences/ChatsPreferenceFragment.java,192,org.thoughtcrime.securesms.preferences,Ajustes,Pantallas de preferencias
+src/main/java/org/thoughtcrime/securesms/components/SearchToolbar.java,184,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/components/emoji/StickerPickerView.java,183,org.thoughtcrime.securesms.components.emoji,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/connect/DirectShareUtil.java,183,org.thoughtcrime.securesms.connect,Puente con core,"DcHelper, DcEventCenter, AccountManager, providers, workers"
+src/main/java/org/thoughtcrime/securesms/contacts/ContactSelectionListItem.java,183,org.thoughtcrime.securesms.contacts,Contactos,Selección y avatares
+src/main/java/org/thoughtcrime/securesms/imageeditor/HiddenEditText.java,181,org.thoughtcrime.securesms.imageeditor,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/components/ScaleStableImageView.java,180,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/mms/Slide.java,180,org.thoughtcrime.securesms.mms,Adjuntos,"AttachmentManager, Slide/MediaType, tamaños"
+src/main/java/org/thoughtcrime/securesms/components/emoji/MediaKeyboard.java,179,org.thoughtcrime.securesms.components.emoji,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/reactions/ReactionsDetailsFragment.java,178,org.thoughtcrime.securesms.reactions,Reacciones,Reacciones a mensajes
+src/main/java/org/thoughtcrime/securesms/accounts/AccountSelectionListItem.java,176,org.thoughtcrime.securesms.accounts,Cuentas,Selector de cuentas
+src/main/java/org/thoughtcrime/securesms/proxy/ProxyListAdapter.java,176,org.thoughtcrime.securesms.proxy,Proxy,Configuración SOCKS5/HTTP
+guaguapass/src/com/guaguapass/Api.java,176,com.guaguapass,GuaguaPass,"App auxiliar (build.sh, sin Gradle)"
+src/main/java/org/thoughtcrime/securesms/components/AvatarSelector.java,175,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+guaguapass/src/com/guaguapass/SaleActivity.java,171,com.guaguapass,GuaguaPass,"App auxiliar (build.sh, sin Gradle)"
+src/main/java/org/thoughtcrime/securesms/scribbles/StickerSelectFragment.java,164,org.thoughtcrime.securesms.scribbles,Editor de imagen,Fragmentos y stickers
+src/main/java/org/thoughtcrime/securesms/WebxdcStoreActivity.java,161,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/connect/AccountManager.java,160,org.thoughtcrime.securesms.connect,Puente con core,"DcHelper, DcEventCenter, AccountManager, providers, workers"
+src/main/java/org/thoughtcrime/securesms/components/RecentPhotoViewRail.java,156,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/components/reminder/DozeReminder.java,156,org.thoughtcrime.securesms.components.reminder,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/imageeditor/renderers/BezierDrawingRenderer.java,156,org.thoughtcrime.securesms.imageeditor.renderers,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/components/ConversationItemFooter.java,154,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/util/SelectedContactsAdapter.java,152,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/BaseConversationItem.java,151,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/ConversationTitleView.java,149,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/search/SearchViewModel.java,149,org.thoughtcrime.securesms.search,Búsqueda,Búsqueda de mensajes
+src/main/java/org/thoughtcrime/securesms/AllMediaGalleryAdapter.java,147,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/ConversationSwipeAnimationHelper.java,146,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/video/VideoPlayer.java,146,org.thoughtcrime.securesms.video,Vídeo,Recodificación MP4 y reproducción
+src/main/java/org/thoughtcrime/securesms/imageeditor/model/ElementStack.java,144,org.thoughtcrime.securesms.imageeditor.model,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/BlockedContactsActivity.java,143,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/ProfileAvatarItem.java,142,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/geolocation/LocationBackgroundService.java,142,org.thoughtcrime.securesms.geolocation,Ubicación,Compartir ubicación
+src/main/java/org/thoughtcrime/securesms/calls/CallUtil.java,141,org.thoughtcrime.securesms.calls,UI/llamadas,"Llamadas WebRTC, coordinación Telecom, servicio en primer plano"
+src/main/java/org/thoughtcrime/securesms/components/ZoomingImageView.java,140,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/connect/AttachmentsContentProvider.java,140,org.thoughtcrime.securesms.connect,Puente con core,"DcHelper, DcEventCenter, AccountManager, providers, workers"
+src/main/java/org/thoughtcrime/securesms/util/LongClickCopySpan.java,140,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/imageeditor/renderers/CropAreaRenderer.java,139,org.thoughtcrime.securesms.imageeditor.renderers,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/imageeditor/RendererContext.java,138,org.thoughtcrime.securesms.imageeditor,Editor de imagen,Modelo y render del editor
+src/main/java/chat/delta/util/SettableFuture.java,137,chat.delta.util,RPC,Utilidades (SettableFuture)
+src/main/java/org/thoughtcrime/securesms/connect/KeepAliveService.java,137,org.thoughtcrime.securesms.connect,Puente con core,"DcHelper, DcEventCenter, AccountManager, providers, workers"
+src/main/java/org/thoughtcrime/securesms/service/AudioPlaybackService.java,137,org.thoughtcrime.securesms.service,Servicios,"Servicios en primer plano, receivers, audio"
+src/main/java/org/thoughtcrime/securesms/util/DateUtils.java,137,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/LocalHelpActivity.java,136,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/components/ContactFilterToolbar.java,136,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/video/recode/InputSurface.java,136,org.thoughtcrime.securesms.video.recode,Vídeo,Recodificación MP4 y reproducción
+src/main/java/org/thoughtcrime/securesms/components/DeliveryStatusView.java,133,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/imageeditor/model/EditorFlags.java,133,org.thoughtcrime.securesms.imageeditor.model,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/util/views/ProgressDialog.java,133,org.thoughtcrime.securesms.util.views,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/attachments/Attachment.java,132,org.thoughtcrime.securesms.attachments,Adjuntos,Modelo de adjuntos
+src/main/java/org/thoughtcrime/securesms/database/model/ThreadRecord.java,132,org.thoughtcrime.securesms.database.model,BD local,Loaders y modelos auxiliares
+src/main/java/org/thoughtcrime/securesms/reactions/ReactionsConversationView.java,131,org.thoughtcrime.securesms.reactions,Reacciones,Reacciones a mensajes
+src/main/java/org/thoughtcrime/securesms/imageeditor/model/AnimationMatrix.java,130,org.thoughtcrime.securesms.imageeditor.model,Editor de imagen,Modelo y render del editor
+src/main/java/chat/delta/rpc/BaseRpcTransport.java,129,chat.delta.rpc,RPC,Cliente JSON-RPC generado + transporte
+src/main/java/org/thoughtcrime/securesms/geolocation/DcLocation.java,128,org.thoughtcrime.securesms.geolocation,Ubicación,Compartir ubicación
+src/main/java/org/thoughtcrime/securesms/service/FetchForegroundService.java,128,org.thoughtcrime.securesms.service,Servicios,"Servicios en primer plano, receivers, audio"
+src/main/java/org/thoughtcrime/securesms/util/DynamicTheme.java,126,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/ConversationUpdateItem.java,125,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/EphemeralMessagesDialog.java,125,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/geolocation/DcLocationManager.java,125,org.thoughtcrime.securesms.geolocation,Ubicación,Compartir ubicación
+src/main/java/org/thoughtcrime/securesms/ResolveMediaTask.java,124,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/audio/AudioRecorder.java,124,org.thoughtcrime.securesms.audio,Audio,Grabación/reproducción
+src/main/java/org/thoughtcrime/securesms/calls/AudioDevicePickerDialog.java,123,org.thoughtcrime.securesms.calls,UI/llamadas,"Llamadas WebRTC, coordinación Telecom, servicio en primer plano"
+src/main/java/org/thoughtcrime/securesms/util/ListenableFutureTask.java,123,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/imageeditor/model/Bisect.java,119,org.thoughtcrime.securesms.imageeditor.model,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/components/WebxdcView.java,118,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/qr/QrScanFragment.java,118,org.thoughtcrime.securesms.qr,QR/altas,"Escaneo, deep links, securejoin, backup QR, relays"
+src/main/java/org/thoughtcrime/securesms/ConversationListArchiveActivity.java,117,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/qr/BackupReceiverFragment.java,117,org.thoughtcrime.securesms.qr,QR/altas,"Escaneo, deep links, securejoin, backup QR, relays"
+src/main/java/org/thoughtcrime/securesms/LogViewActivity.java,116,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/NewConversationActivity.java,116,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/BaseActionBarActivity.java,115,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/jobmanager/Job.java,115,org.thoughtcrime.securesms.jobmanager,Tareas,Cola de trabajos propia
+src/main/java/org/thoughtcrime/securesms/contacts/ContactAccessor.java,114,org.thoughtcrime.securesms.contacts,Contactos,Selección y avatares
+src/main/java/org/thoughtcrime/securesms/StatsSending.java,113,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/jobmanager/JobParameters.java,113,org.thoughtcrime.securesms.jobmanager,Tareas,Cola de trabajos propia
+src/main/java/org/thoughtcrime/securesms/reactions/ReactionRecipientsAdapter.java,112,org.thoughtcrime.securesms.reactions,Reacciones,Reacciones a mensajes
+src/main/java/org/thoughtcrime/securesms/components/DocumentView.java,111,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/contacts/NewContactActivity.java,111,org.thoughtcrime.securesms.contacts,Contactos,Selección y avatares
+src/main/java/org/thoughtcrime/securesms/components/emoji/AutoScaledEmojiTextView.java,110,org.thoughtcrime.securesms.components.emoji,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/scribbles/StickerSelectActivity.java,110,org.thoughtcrime.securesms.scribbles,Editor de imagen,Fragmentos y stickers
+src/main/java/com/b44t/messenger/DcChat.java,109,com.b44t.messenger,Bindings JNI,DcContext/DcMsg/DcChat/... sobre deltachat-core
+src/main/java/org/thoughtcrime/securesms/components/ShapeScrim.java,108,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/util/LongClickMovementMethod.java,108,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/components/CallItemView.java,107,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/relay/RelayListAdapter.java,107,org.thoughtcrime.securesms.relay,Relay,Alta/edición de relays (transportes)
+src/main/java/org/thoughtcrime/securesms/imageeditor/ElementScaleEditSession.java,105,org.thoughtcrime.securesms.imageeditor,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/components/RemovableEditableMediaView.java,104,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/TransportOptions.java,103,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/database/Address.java,103,org.thoughtcrime.securesms.database,BD local,Loaders y modelos auxiliares
+src/main/java/org/thoughtcrime/securesms/jobmanager/JobQueue.java,102,org.thoughtcrime.securesms.jobmanager,Tareas,Cola de trabajos propia
+src/main/java/org/thoughtcrime/securesms/service/NotificationController.java,102,org.thoughtcrime.securesms.service,Servicios,"Servicios en primer plano, receivers, audio"
+src/main/java/org/thoughtcrime/securesms/accounts/AccountSelectionListAdapter.java,99,org.thoughtcrime.securesms.accounts,Cuentas,Selector de cuentas
+src/main/java/org/thoughtcrime/securesms/util/views/ConversationAdaptiveActionsToolbar.java,99,org.thoughtcrime.securesms.util.views,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/preferences/AppearancePreferenceFragment.java,98,org.thoughtcrime.securesms.preferences,Ajustes,Pantallas de preferencias
+src/main/java/org/thoughtcrime/securesms/ContactSelectionActivity.java,96,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/util/guava/Present.java,96,org.thoughtcrime.securesms.util.guava,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/components/AvatarView.java,95,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/util/JsonUtils.java,95,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/util/task/SnackbarAsyncTask.java,95,org.thoughtcrime.securesms.util.task,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/components/SendButton.java,94,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/qr/QrShowActivity.java,94,org.thoughtcrime.securesms.qr,QR/altas,"Escaneo, deep links, securejoin, backup QR, relays"
+src/main/java/com/b44t/messenger/DcAccounts.java,93,com.b44t.messenger,Bindings JNI,DcContext/DcMsg/DcChat/... sobre deltachat-core
+src/main/java/org/thoughtcrime/securesms/crypto/DatabaseSecretProvider.java,93,org.thoughtcrime.securesms.crypto,Cripto local,Secreto de BD con Android Keystore
+src/main/java/org/thoughtcrime/securesms/mms/PartAuthority.java,93,org.thoughtcrime.securesms.mms,Adjuntos,"AttachmentManager, Slide/MediaType, tamaños"
+src/main/java/org/thoughtcrime/securesms/imageeditor/ThumbDragEditSession.java,91,org.thoughtcrime.securesms.imageeditor,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/jobmanager/JobConsumer.java,90,org.thoughtcrime.securesms.jobmanager,Tareas,Cola de trabajos propia
+src/main/java/org/thoughtcrime/securesms/util/guava/Absent.java,90,org.thoughtcrime.securesms.util.guava,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+guaguapass/src/com/guaguapass/Updater.java,90,com.guaguapass,GuaguaPass,"App auxiliar (build.sh, sin Gradle)"
+src/main/java/org/thoughtcrime/securesms/components/InputAwareLayout.java,89,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/connect/ForegroundDetector.java,89,org.thoughtcrime.securesms.connect,Puente con core,"DcHelper, DcEventCenter, AccountManager, providers, workers"
+src/main/java/org/thoughtcrime/securesms/imageeditor/renderers/OvalGuideRenderer.java,89,org.thoughtcrime.securesms.imageeditor.renderers,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/preferences/widgets/ProfilePreference.java,89,org.thoughtcrime.securesms.preferences.widgets,Ajustes,Pantallas de preferencias
+src/main/java/org/thoughtcrime/securesms/util/Linkifier.java,89,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/components/MediaView.java,88,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/imageeditor/model/UndoRedoStacks.java,88,org.thoughtcrime.securesms.imageeditor.model,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/imageeditor/model/CropThumbRenderer.java,87,org.thoughtcrime.securesms.imageeditor.model,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/webxdc/WebxdcGarbageCollectionWorker.java,87,org.thoughtcrime.securesms.webxdc,Webxdc,GC de apps webxdc
+src/main/java/org/thoughtcrime/securesms/imageeditor/model/ThumbRenderer.java,85,org.thoughtcrime.securesms.imageeditor.model,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/components/FromTextView.java,84,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/mms/DecryptableStreamUriLoader.java,84,org.thoughtcrime.securesms.mms,Adjuntos,"AttachmentManager, Slide/MediaType, tamaños"
+guaguapass/src/com/guaguapass/Identity.java,84,com.guaguapass,GuaguaPass,"App auxiliar (build.sh, sin Gradle)"
+src/main/java/chat/delta/rpc/types/MessageLoadResult.java,83,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/com/b44t/messenger/DcContact.java,83,com.b44t.messenger,Bindings JNI,DcContext/DcMsg/DcChat/... sobre deltachat-core
+src/main/java/org/thoughtcrime/securesms/mms/AudioSlide.java,83,org.thoughtcrime.securesms.mms,Adjuntos,"AttachmentManager, Slide/MediaType, tamaños"
+src/main/java/org/thoughtcrime/securesms/mms/SlideDeck.java,81,org.thoughtcrime.securesms.mms,Adjuntos,"AttachmentManager, Slide/MediaType, tamaños"
+src/main/java/org/thoughtcrime/securesms/components/BorderlessImageView.java,80,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/imageeditor/Bounds.java,80,org.thoughtcrime.securesms.imageeditor,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/ContactMultiSelectionActivity.java,79,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/components/AvatarImageView.java,79,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/connect/DcContactsLoader.java,79,org.thoughtcrime.securesms.connect,Puente con core,"DcHelper, DcEventCenter, AccountManager, providers, workers"
+src/main/java/org/thoughtcrime/securesms/components/HidingLinearLayout.java,78,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/components/subsampling/AttachmentRegionDecoder.java,78,org.thoughtcrime.securesms.components.subsampling,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/imageeditor/CanvasMatrix.java,78,org.thoughtcrime.securesms.imageeditor,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/util/AsyncLoader.java,76,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/permissions/PermissionsRequest.java,75,org.thoughtcrime.securesms.permissions,Permisos,Gestión de permisos runtime
+src/main/java/org/thoughtcrime/securesms/components/CornerMask.java,74,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/components/VcardView.java,74,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/mms/SignalGlideModule.java,74,org.thoughtcrime.securesms.mms,Adjuntos,"AttachmentManager, Slide/MediaType, tamaños"
+src/main/java/org/thoughtcrime/securesms/notifications/RemoteReplyReceiver.java,74,org.thoughtcrime.securesms.notifications,Notificaciones,"NotificationCenter, receivers de respuesta/marcar leído"
+src/main/java/org/thoughtcrime/securesms/scribbles/widget/ColorPaletteAdapter.java,72,org.thoughtcrime.securesms.scribbles.widget,Editor de imagen,Fragmentos y stickers
+src/main/java/org/thoughtcrime/securesms/video/recode/Mp4Movie.java,72,org.thoughtcrime.securesms.video.recode,Vídeo,Recodificación MP4 y reproducción
+src/main/java/chat/delta/rpc/types/ChatListItemFetchResult.java,71,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/org/thoughtcrime/securesms/imageeditor/renderers/InverseFillRenderer.java,71,org.thoughtcrime.securesms.imageeditor.renderers,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/profiles/AvatarHelper.java,71,org.thoughtcrime.securesms.profiles,Perfiles,Utilidades de perfil
+src/main/java/org/thoughtcrime/securesms/mms/VideoSlide.java,70,org.thoughtcrime.securesms.mms,Adjuntos,"AttachmentManager, Slide/MediaType, tamaños"
+src/main/java/org/thoughtcrime/securesms/reactions/ReactionRecipientItem.java,69,org.thoughtcrime.securesms.reactions,Reacciones,Reacciones a mensajes
+src/main/java/org/thoughtcrime/securesms/contacts/avatars/LocalFileContactPhoto.java,68,org.thoughtcrime.securesms.contacts.avatars,Contactos,Selección y avatares
+src/main/java/org/thoughtcrime/securesms/imageeditor/ElementEditSession.java,68,org.thoughtcrime.securesms.imageeditor,Editor de imagen,Modelo y render del editor
+src/main/java/chat/delta/rpc/types/Message.java,67,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/org/thoughtcrime/securesms/components/AnimatingToggle.java,67,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/components/registration/PulsingFloatingActionButton.java,66,org.thoughtcrime.securesms.components.registration,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/com/b44t/messenger/DcChatlist.java,65,com.b44t.messenger,Bindings JNI,DcContext/DcMsg/DcChat/... sobre deltachat-core
+src/main/java/org/thoughtcrime/securesms/contacts/avatars/SystemContactPhoto.java,65,org.thoughtcrime.securesms.contacts.avatars,Contactos,Selección y avatares
+src/main/java/org/thoughtcrime/securesms/imageeditor/model/AlphaAnimation.java,64,org.thoughtcrime.securesms.imageeditor.model,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/messagerequests/MessageRequestsBottomView.java,64,org.thoughtcrime.securesms.messagerequests,Solicitudes,Mensajes de solicitud de contacto
+src/main/java/org/thoughtcrime/securesms/TransportOptionsAdapter.java,63,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/components/emoji/EmojiToggle.java,63,org.thoughtcrime.securesms.components.emoji,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/util/MailtoUtil.java,62,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/ProfileTextItem.java,60,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/util/Hex.java,60,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/contacts/avatars/GeneratedContactPhoto.java,59,org.thoughtcrime.securesms.contacts.avatars,Contactos,Selección y avatares
+src/main/java/org/thoughtcrime/securesms/attachments/UriAttachment.java,58,org.thoughtcrime.securesms.attachments,Adjuntos,Modelo de adjuntos
+src/main/java/org/thoughtcrime/securesms/components/audioplay/AudioPlaybackState.java,58,org.thoughtcrime.securesms.components.audioplay,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/contacts/avatars/ResourceContactPhoto.java,58,org.thoughtcrime.securesms.contacts.avatars,Contactos,Selección y avatares
+src/main/java/org/thoughtcrime/securesms/notifications/InChatSounds.java,58,org.thoughtcrime.securesms.notifications,Notificaciones,"NotificationCenter, receivers de respuesta/marcar leído"
+src/main/java/org/thoughtcrime/securesms/util/guava/Function.java,58,org.thoughtcrime.securesms.util.guava,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/ConversationListRelayingActivity.java,57,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/PassphraseRequiredActionBarActivity.java,57,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/contacts/avatars/MyProfileContactPhoto.java,57,org.thoughtcrime.securesms.contacts.avatars,Contactos,Selección y avatares
+src/main/java/org/thoughtcrime/securesms/jobmanager/JobManager.java,57,org.thoughtcrime.securesms.jobmanager,Tareas,Cola de trabajos propia
+src/main/java/org/thoughtcrime/securesms/util/MarkdownUtil.java,57,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/glide/ContactPhotoFetcher.java,56,org.thoughtcrime.securesms.glide,Imágenes,Integración Glide
+src/main/java/org/thoughtcrime/securesms/util/Stopwatch.java,56,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/database/loaders/PagingMediaLoader.java,55,org.thoughtcrime.securesms.database.loaders,BD local,Loaders y modelos auxiliares
+src/main/java/org/thoughtcrime/securesms/mms/ImageSlide.java,55,org.thoughtcrime.securesms.mms,Adjuntos,"AttachmentManager, Slide/MediaType, tamaños"
+src/main/java/org/thoughtcrime/securesms/ProfileStatusItem.java,54,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/imageeditor/model/ParcelUtils.java,54,org.thoughtcrime.securesms.imageeditor.model,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/search/model/SearchResult.java,54,org.thoughtcrime.securesms.search.model,Búsqueda,Búsqueda de mensajes
+src/main/java/org/thoughtcrime/securesms/permissions/RationaleDialog.java,53,org.thoughtcrime.securesms.permissions,Permisos,Gestión de permisos runtime
+src/main/java/chat/delta/rpc/types/Contact.java,52,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/org/thoughtcrime/securesms/util/ResUtil.java,52,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/util/StorageUtil.java,52,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/util/task/ProgressDialogAsyncTask.java,52,org.thoughtcrime.securesms.util.task,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/chat/delta/rpc/types/EnteredLoginParam.java,51,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/org/thoughtcrime/securesms/TransportOptionsPopup.java,51,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/glide/ContactPhotoLoader.java,51,org.thoughtcrime.securesms.glide,Imágenes,Integración Glide
+src/main/java/org/thoughtcrime/securesms/video/exo/AttachmentDataSource.java,51,org.thoughtcrime.securesms.video.exo,Vídeo,Recodificación MP4 y reproducción
+src/main/java/org/thoughtcrime/securesms/MuteDialog.java,50,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/ShareLocationDialog.java,50,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/scribbles/StickerLoader.java,50,org.thoughtcrime.securesms.scribbles,Editor de imagen,Fragmentos y stickers
+src/main/java/org/thoughtcrime/securesms/components/SwitchPreferenceCompat.java,49,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/database/loaders/RecentPhotosLoader.java,49,org.thoughtcrime.securesms.database.loaders,BD local,Loaders y modelos auxiliares
+src/main/java/org/thoughtcrime/securesms/mms/DocumentSlide.java,49,org.thoughtcrime.securesms.mms,Adjuntos,"AttachmentManager, Slide/MediaType, tamaños"
+src/main/java/org/thoughtcrime/securesms/util/AvatarUtil.java,49,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/chat/delta/rpc/types/CallState.java,48,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/org/thoughtcrime/securesms/imageeditor/ElementDragEditSession.java,48,org.thoughtcrime.securesms.imageeditor,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/attachments/DcAttachment.java,47,org.thoughtcrime.securesms.attachments,Adjuntos,Modelo de adjuntos
+src/main/java/org/thoughtcrime/securesms/ConnectivityActivity.java,46,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/imageeditor/DrawingSession.java,46,org.thoughtcrime.securesms.imageeditor,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/notifications/MarkReadReceiver.java,46,org.thoughtcrime.securesms.notifications,Notificaciones,"NotificationCenter, receivers de respuesta/marcar leído"
+src/main/java/org/thoughtcrime/securesms/util/SpanUtil.java,46,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/SetStartingPositionLinearLayoutManager.java,45,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/connect/NetworkStateReceiver.java,45,org.thoughtcrime.securesms.connect,Puente con core,"DcHelper, DcEventCenter, AccountManager, providers, workers"
+guaguapass/src/com/guaguapass/Session.java,45,com.guaguapass,GuaguaPass,"App auxiliar (build.sh, sin Gradle)"
+src/main/java/com/b44t/messenger/DcMediaGalleryElement.java,44,com.b44t.messenger,Bindings JNI,DcContext/DcMsg/DcChat/... sobre deltachat-core
+src/main/java/org/thoughtcrime/securesms/ConversationListItemInboxZero.java,44,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/chat/delta/rpc/types/Viewtype.java,43,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/org/thoughtcrime/securesms/contacts/avatars/VcardContactPhoto.java,43,org.thoughtcrime.securesms.contacts.avatars,Contactos,Selección y avatares
+src/main/java/org/thoughtcrime/securesms/util/FileUtils.java,43,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/components/CircleColorImageView.java,42,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/chat/delta/rpc/types/FullChat.java,41,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/org/thoughtcrime/securesms/BindableConversationItem.java,41,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/TransportOption.java,41,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/components/viewpager/HackyViewPager.java,41,org.thoughtcrime.securesms.components.viewpager,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/chat/delta/rpc/types/SystemMessageType.java,40,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/org/thoughtcrime/securesms/components/SquareFrameLayout.java,40,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/glide/svg/SvgDecoder.java,40,org.thoughtcrime.securesms.glide.svg,Imágenes,Integración Glide
+src/main/java/org/thoughtcrime/securesms/util/Pair.java,40,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/util/ThemeUtil.java,40,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/mms/QuoteModel.java,39,org.thoughtcrime.securesms.mms,Adjuntos,"AttachmentManager, Slide/MediaType, tamaños"
+src/main/java/org/thoughtcrime/securesms/util/IntentUtils.java,39,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/connect/FetchWorker.java,37,org.thoughtcrime.securesms.connect,Puente con core,"DcHelper, DcEventCenter, AccountManager, providers, workers"
+src/main/java/org/thoughtcrime/securesms/imageeditor/model/InBoundsMemory.java,37,org.thoughtcrime.securesms.imageeditor.model,Editor de imagen,Modelo y render del editor
+src/main/java/chat/delta/rpc/types/Pair.java,36,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/chat/delta/rpc/types/WebxdcMessageInfo.java,36,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/com/b44t/messenger/DcBackupProvider.java,36,com.b44t.messenger,Bindings JNI,DcContext/DcMsg/DcChat/... sobre deltachat-core
+src/main/java/com/b44t/messenger/DcLot.java,36,com.b44t.messenger,Bindings JNI,DcContext/DcMsg/DcChat/... sobre deltachat-core
+src/main/java/org/thoughtcrime/securesms/components/subsampling/AttachmentBitmapDecoder.java,36,org.thoughtcrime.securesms.components.subsampling,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/qr/CustomCaptureManager.java,36,org.thoughtcrime.securesms.qr,QR/altas,"Escaneo, deep links, securejoin, backup QR, relays"
+src/main/java/org/thoughtcrime/securesms/util/Conversions.java,36,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/util/Debouncer.java,36,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/chat/delta/rpc/types/BasicChat.java,35,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/org/thoughtcrime/securesms/util/guava/Supplier.java,35,org.thoughtcrime.securesms.util.guava,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/chat/delta/rpc/types/MessageQuote.java,33,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/org/thoughtcrime/securesms/glide/lottie/LottieDecoder.java,33,org.thoughtcrime.securesms.glide.lottie,Imágenes,Integración Glide
+src/main/java/org/thoughtcrime/securesms/imageeditor/renderers/InvalidateableRenderer.java,33,org.thoughtcrime.securesms.imageeditor.renderers,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/mms/DecryptableStreamLocalUriFetcher.java,33,org.thoughtcrime.securesms.mms,Adjuntos,"AttachmentManager, Slide/MediaType, tamaños"
+src/main/java/chat/delta/rpc/types/Account.java,32,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/com/b44t/messenger/DcEvent.java,32,com.b44t.messenger,Bindings JNI,DcContext/DcMsg/DcChat/... sobre deltachat-core
+src/main/java/org/thoughtcrime/securesms/BaseConversationListAdapter.java,32,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/providers/SingleUseBlobProvider.java,32,org.thoughtcrime.securesms.providers,ContentProviders,"Blob providers, FileProvider util"
+src/main/java/org/thoughtcrime/securesms/scribbles/ScribbleActivity.java,32,org.thoughtcrime.securesms.scribbles,Editor de imagen,Fragmentos y stickers
+src/main/java/org/thoughtcrime/securesms/components/ControllableViewPager.java,31,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/components/GlideDrawableListeningTarget.java,31,org.thoughtcrime.securesms.components,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/imageeditor/EditSession.java,31,org.thoughtcrime.securesms.imageeditor,Editor de imagen,Modelo y render del editor
+src/main/java/com/b44t/messenger/DcEventChannel.java,30,com.b44t.messenger,Bindings JNI,DcContext/DcMsg/DcChat/... sobre deltachat-core
+src/main/java/com/b44t/messenger/DcProvider.java,30,com.b44t.messenger,Bindings JNI,DcContext/DcMsg/DcChat/... sobre deltachat-core
+src/main/java/org/thoughtcrime/securesms/crypto/DatabaseSecret.java,29,org.thoughtcrime.securesms.crypto,Cripto local,Secreto de BD con Android Keystore
+src/main/java/org/thoughtcrime/securesms/jobmanager/requirements/Requirement.java,29,org.thoughtcrime.securesms.jobmanager.requirements,Tareas,Cola de trabajos propia
+src/main/java/org/thoughtcrime/securesms/util/AndroidSignalProtocolLogger.java,29,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/chat/delta/rpc/types/EphemeralTimer.java,28,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/org/thoughtcrime/securesms/contacts/avatars/GroupRecordContactPhoto.java,28,org.thoughtcrime.securesms.contacts.avatars,Contactos,Selección y avatares
+src/main/java/org/thoughtcrime/securesms/contacts/avatars/ProfileContactPhoto.java,28,org.thoughtcrime.securesms.contacts.avatars,Contactos,Selección y avatares
+src/main/java/org/thoughtcrime/securesms/imageeditor/ImageEditorMediaConstraints.java,28,org.thoughtcrime.securesms.imageeditor,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/imageeditor/Renderer.java,28,org.thoughtcrime.securesms.imageeditor,Editor de imagen,Modelo y render del editor
+src/main/java/com/b44t/messenger/DcEventEmitter.java,27,com.b44t.messenger,Bindings JNI,DcContext/DcMsg/DcChat/... sobre deltachat-core
+src/main/java/org/thoughtcrime/securesms/service/PanicResponderListener.java,27,org.thoughtcrime.securesms.service,Servicios,"Servicios en primer plano, receivers, audio"
+src/main/java/org/thoughtcrime/securesms/util/DrawableUtil.java,27,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/util/DynamicNoActionBarTheme.java,27,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/util/ParcelUtil.java,27,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/util/views/Stub.java,27,org.thoughtcrime.securesms.util.views,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/ConversationItemTouchListener.java,26,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/glide/svg/SvgDrawableTranscoder.java,26,org.thoughtcrime.securesms.glide.svg,Imágenes,Integración Glide
+src/main/java/org/thoughtcrime/securesms/glide/lottie/LottieDrawableTranscoder.java,25,org.thoughtcrime.securesms.glide.lottie,Imágenes,Integración Glide
+src/main/java/org/thoughtcrime/securesms/util/ScreenLockUtil.java,25,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/chat/delta/rpc/types/MessageData.java,24,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/chat/delta/rpc/types/MessageListItem.java,24,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/chat/delta/rpc/types/MuteDuration.java,24,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/com/b44t/messenger/DcJsonrpcInstance.java,24,com.b44t.messenger,Bindings JNI,DcContext/DcMsg/DcChat/... sobre deltachat-core
+src/main/java/org/thoughtcrime/securesms/EglUtils.java,24,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/components/recyclerview/DeleteItemAnimator.java,24,org.thoughtcrime.securesms.components.recyclerview,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/mms/VcardSlide.java,24,org.thoughtcrime.securesms.mms,Adjuntos,"AttachmentManager, Slide/MediaType, tamaños"
+src/main/java/org/thoughtcrime/securesms/util/StreamUtil.java,24,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/util/spans/CenterAlignedRelativeSizeSpan.java,24,org.thoughtcrime.securesms.util.spans,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/database/AttachmentDatabase.java,23,org.thoughtcrime.securesms.database,BD local,Loaders y modelos auxiliares
+src/main/java/org/thoughtcrime/securesms/util/FutureTaskListener.java,23,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/chat/delta/rpc/types/MessageSearchResult.java,22,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/chat/delta/rpc/types/SecurejoinSource.java,22,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/com/b44t/messenger/FFITransport.java,22,com.b44t.messenger,Bindings JNI,DcContext/DcMsg/DcChat/... sobre deltachat-core
+src/main/java/org/thoughtcrime/securesms/components/viewpager/ExtendedOnPageChangedListener.java,22,org.thoughtcrime.securesms.components.viewpager,Widgets,"InputPanel, AudioView, Emoji, etc."
+src/main/java/org/thoughtcrime/securesms/util/Hash.java,21,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/util/ServiceUtil.java,21,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/chat/delta/rpc/types/MessageNotificationInfo.java,20,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/chat/delta/rpc/types/VcardContact.java,20,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/org/thoughtcrime/securesms/mms/GifSlide.java,20,org.thoughtcrime.securesms.mms,Adjuntos,"AttachmentManager, Slide/MediaType, tamaños"
+src/main/java/org/thoughtcrime/securesms/preferences/CorrectedPreferenceFragment.java,20,org.thoughtcrime.securesms.preferences,Ajustes,Pantallas de preferencias
+src/main/java/org/thoughtcrime/securesms/util/AccessibilityUtil.java,20,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/chat/delta/rpc/types/CallInfo.java,19,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/org/thoughtcrime/securesms/contacts/avatars/ContactPhoto.java,19,org.thoughtcrime.securesms.contacts.avatars,Contactos,Selección y avatares
+src/main/java/org/thoughtcrime/securesms/util/SignalProtocolLoggerProvider.java,19,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/video/exo/AttachmentDataSourceFactory.java,19,org.thoughtcrime.securesms.video.exo,Vídeo,Recodificación MP4 y reproducción
+src/main/java/org/thoughtcrime/securesms/video/recode/Sample.java,19,org.thoughtcrime.securesms.video.recode,Vídeo,Recodificación MP4 y reproducción
+src/main/java/org/thoughtcrime/securesms/BindableConversationListItem.java,18,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/animation/AnimationCompleteListener.java,18,org.thoughtcrime.securesms.animation,Animación,Utilidades de animación
+src/main/java/org/thoughtcrime/securesms/mms/StickerSlide.java,18,org.thoughtcrime.securesms.mms,Adjuntos,"AttachmentManager, Slide/MediaType, tamaños"
+src/main/java/org/thoughtcrime/securesms/preferences/widgets/NotificationPrivacyPreference.java,18,org.thoughtcrime.securesms.preferences.widgets,Ajustes,Pantallas de preferencias
+src/main/java/org/thoughtcrime/securesms/util/FileProviderUtil.java,18,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/util/LRUCache.java,18,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/util/SignalProtocolLogger.java,18,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/util/ThreadUtil.java,17,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/chat/delta/rpc/types/Location.java,16,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/chat/delta/rpc/types/Socket.java,16,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/org/thoughtcrime/securesms/AttachContactActivity.java,16,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/imageeditor/ColorableRenderer.java,16,org.thoughtcrime.securesms.imageeditor,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/service/BootReceiver.java,16,org.thoughtcrime.securesms.service,Servicios,"Servicios en primer plano, receivers, audio"
+src/main/java/org/thoughtcrime/securesms/util/TextUtil.java,16,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/DummyActivity.java,15,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/chat/delta/rpc/types/MessageInfo.java,14,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/chat/delta/util/ListenableFuture.java,14,chat.delta.util,RPC,Utilidades (SettableFuture)
+src/main/java/chat/delta/rpc/types/EnteredCertificateChecks.java,13,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/chat/delta/rpc/types/HttpResponse.java,13,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/chat/delta/rpc/types/NotifyState.java,13,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/chat/delta/rpc/types/SecurejoinUiPath.java,13,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/chat/delta/rpc/types/Reaction.java,12,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/org/thoughtcrime/securesms/util/BitmapDecodingException.java,12,org.thoughtcrime.securesms.util,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/org/thoughtcrime/securesms/contacts/avatars/FallbackContactPhoto.java,11,org.thoughtcrime.securesms.contacts.avatars,Contactos,Selección y avatares
+src/main/java/org/thoughtcrime/securesms/mms/MediaConstraints.java,11,org.thoughtcrime.securesms.mms,Adjuntos,"AttachmentManager, Slide/MediaType, tamaños"
+src/main/java/org/thoughtcrime/securesms/util/concurrent/AssertedSuccessListener.java,11,org.thoughtcrime.securesms.util.concurrent,Utilidades,"Prefs, Util, vistas, tareas, providers de ficheros"
+src/main/java/chat/delta/rpc/types/ChatType.java,10,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/chat/delta/rpc/types/DownloadState.java,10,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/chat/delta/rpc/types/ProviderInfo.java,10,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/chat/delta/rpc/types/Reactions.java,10,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/chat/delta/rpc/types/Event.java,9,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/chat/delta/rpc/types/TransportListEntry.java,9,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/org/thoughtcrime/securesms/recipients/RecipientForeverObserver.java,9,org.thoughtcrime.securesms.recipients,Destinatarios,Modelo de destinatario
+src/main/java/chat/delta/rpc/RpcException.java,8,chat.delta.rpc,RPC,Cliente JSON-RPC generado + transporte
+src/main/java/chat/delta/rpc/types/ChatVisibility.java,8,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/chat/delta/rpc/types/MessageReadReceipt.java,7,chat.delta.rpc.types,RPC,Tipos del protocolo JSON-RPC
+src/main/java/org/thoughtcrime/securesms/mms/SlideClickListener.java,7,org.thoughtcrime.securesms.mms,Adjuntos,"AttachmentManager, Slide/MediaType, tamaños"
+src/main/java/org/thoughtcrime/securesms/imageeditor/UndoRedoStackListener.java,6,org.thoughtcrime.securesms.imageeditor,Editor de imagen,Modelo y render del editor
+src/main/java/org/thoughtcrime/securesms/Unbindable.java,5,org.thoughtcrime.securesms,UI principal,Activities y adaptadores de primer nivel
+src/main/java/org/thoughtcrime/securesms/recipients/RecipientModifiedListener.java,5,org.thoughtcrime.securesms.recipients,Destinatarios,Modelo de destinatario
